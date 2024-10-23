@@ -9,8 +9,7 @@ import {
 } from "@remix-run/cloudflare";
 
 export class KVSession {
-  storage;
-  session;
+  // -- CLASS STATIC VARIABLES & METHODS
 
   static COOKIE_KEY = "__session";
   static COOKIE_SECRET = "r3m1xr0ck5";
@@ -32,6 +31,11 @@ export class KVSession {
 
     return new this(storage, session);
   }
+
+  // -- CLASS INSTANCE VARIABLES & METHODS
+
+  storage;
+  session;
 
   constructor(storage: SessionStorage, session: Session) {
     this.storage = storage;
