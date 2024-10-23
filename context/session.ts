@@ -15,11 +15,6 @@ export class KVSession {
   static COOKIE_KEY = "__session";
   static COOKIE_SECRET = "r3m1xr0ck5";
 
-  constructor(storage: SessionStorage, session: Session) {
-    this.storage = storage;
-    this.session = session;
-  }
-
   static async init(request: Request, context: CloudflareContext) {
     const cookie = createCookie(KVSession.COOKIE_KEY, {
       secrets: [KVSession.COOKIE_SECRET],
@@ -36,6 +31,11 @@ export class KVSession {
       .catch(() => storage.getSession());
 
     return new this(storage, session);
+  }
+
+  constructor(storage: SessionStorage, session: Session) {
+    this.storage = storage;
+    this.session = session;
   }
 
   get id() {
