@@ -1,5 +1,12 @@
-import { GetLoadContextFunction } from "@remix-run/cloudflare-pages";
+import { GetLoadContextArgs } from "@remix-run/cloudflare";
 
-export const getLoadContext: GetLoadContextFunction = ({ context }) => {
-  return context;
-};
+import { KVSession } from "./session";
+
+export async function getLoadContext({ request, context }: GetLoadContextArgs) {
+  const session = await KVSession.init(request, context);
+
+  return {
+    ...context,
+    session,
+  };
+}

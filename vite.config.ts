@@ -10,7 +10,6 @@ import { getLoadContext } from "./context";
 export default defineConfig({
   plugins: [
     remixCloudflareDevProxy({
-      // @ts-expect-error - the typings for are not matching up, but don't break the project.
       getLoadContext,
     }),
     remix({
