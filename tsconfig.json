@@ -1,5 +1,6 @@
 {
   "include": [
+    "**/types/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/.server/**/*.ts",
@@ -23,7 +24,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "@app/*": ["./app/*"]
     },
 
     // Vite takes care of building everything, not tsc.

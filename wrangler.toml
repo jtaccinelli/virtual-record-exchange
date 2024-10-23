@@ -1,0 +1,8 @@
+name = "remix-boilerplate"
+pages_build_output_dir = "./build/client
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-04-18"
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "f5ab5a60780f43628d5d941ed706b431"
