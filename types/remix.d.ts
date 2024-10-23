@@ -11,6 +11,7 @@ type GetLoadContextArgs = {
   context: CloudflareContext;
 };
 
+export * from "@remix-run/cloudflare";
 declare module "@remix-run/cloudflare" {
   interface AppLoadContext extends CloudflareContext {}
 
