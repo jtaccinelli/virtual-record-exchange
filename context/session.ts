@@ -14,6 +14,10 @@ export class KVSession {
   static COOKIE_KEY = "__session";
   static COOKIE_SECRET = "r3m1xr0ck5";
 
+  static KEY__ACCESS_TOKEN = "__spotifyAccessToken";
+  static KEY__REFERSH_TOKEN = "__spotifyRefreshToken";
+  static KEY__EXPIRES_AT = "__spotifyExpiresAt";
+
   static async init(request: Request, context: CloudflareContext) {
     const cookie = createCookie(KVSession.COOKIE_KEY, {
       secrets: [KVSession.COOKIE_SECRET],

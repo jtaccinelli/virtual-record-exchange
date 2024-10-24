@@ -4,6 +4,7 @@ type Cloudflare = Omit<PlatformProxy<Env>, "dispose">;
 
 // Import Context Types
 type KVSession = import("context/session").KVSession;
+type SpotifyAuth = import("context/auth").SpotifyAuth;
 
 export * from "@remix-run/cloudflare";
 declare module "@remix-run/cloudflare" {
@@ -22,5 +23,6 @@ declare module "@remix-run/cloudflare" {
 
   interface AppLoadContext extends CloudflareContext {
     session: KVSession;
+    auth: SpotifyAuth;
   }
 }
