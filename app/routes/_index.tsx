@@ -1,4 +1,5 @@
-import { MetaFunction } from "@remix-run/cloudflare";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { Link, useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,6 +8,21 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function loader({ context }: LoaderFunctionArgs) {
+  return { accessToken: context.auth.accessToken };
+}
+
 export default function Index() {
-  return <p>Hello!</p>;
+  const { accessToken } = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <p>Hello!</p>
+      {!accessToken ? (
+        <Link to="/api/auth/sign-in">Sign In</Link>
+      ) : (
+        <Link to="/api/auth/sign-out">Sign Out</Link>
+      )}
+    </div>
+  );
 }

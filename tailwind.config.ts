@@ -10,6 +10,7 @@ export default {
       },
       colors: {
         gray: colors.neutral,
+        primary: colors.amber,
       },
     },
   },
