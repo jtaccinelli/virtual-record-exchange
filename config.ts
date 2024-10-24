@@ -3,6 +3,7 @@ export const config = {
     endpoints: {
       authorise: "https://accounts.spotify.com/authorize",
       token: "https://accounts.spotify.com/api/token",
+      me: "https://api.spotify.com/v1/me",
     },
     details: {
       clientId: "ebe9c3147cae485cbc84fe018fb6281b",
