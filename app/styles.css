@@ -8,7 +8,7 @@
   }
 
   .btn-primary {
-    @apply bg-primary-700 text-primary-100 hover:bg-primary-800 hover:text-white;
+    @apply bg-primary-700 text-primary-50 hover:bg-primary-800 hover:text-white;
   }
 
   .btn-secondary {
