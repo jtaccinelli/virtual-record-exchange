@@ -9,7 +9,7 @@ export default {
         sans: ["Inter var", "Arial", "sans-serif"],
       },
       colors: {
-        gray: colors.neutral,
+        gray: colors.stone,
         primary: colors.amber,
       },
     },

@@ -11,14 +11,14 @@ import {
 } from "@headlessui/react";
 
 import { SpotifyImage } from "./spotify-image";
+import { Pill } from "./pill";
 
 type Props = {
   users: SpotifyApi.UserProfileResponse[];
   max?: number;
 };
 
-export function ComboboxUsers({ users, max = 1 }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
+export function FieldUsers({ users, max = 1 }: Props) {
   const [query, setQuery] = useState<string>();
   const [selectedUsers, setSelectedUsers] = useState<typeof users>([]);
 
@@ -45,10 +45,6 @@ export function ComboboxUsers({ users, max = 1 }: Props) {
     });
   }, [selectedUsers, query]);
 
-  const handleDisplayUser = (user: SpotifyApi.UserProfileResponse) => {
-    return user?.display_name ?? user.id;
-  };
-
   const handleClearUser =
     (targetUser: SpotifyApi.UserProfileResponse) => () => {
       setSelectedUsers((users) => {
@@ -64,12 +60,11 @@ export function ComboboxUsers({ users, max = 1 }: Props) {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    inputRef.current?.blur();
   };
 
   return (
     <Field className="flex flex-col">
-      <div className="flex w-full justify-between">
+      <div className="mb-1 flex w-full justify-between">
         <Label className="font-medium">
           Who submitted the best tracks this week?
         </Label>
@@ -82,27 +77,23 @@ export function ComboboxUsers({ users, max = 1 }: Props) {
           </button>
         )}
       </div>
-      <Description className="mb-2 text-gray-500">
+      <Description className="mb-4 text-sm text-gray-500">
         Select a maximum of {max}
       </Description>
 
-      <div className="mb-4 flex w-full flex-row flex-wrap gap-1">
+      <div className="mb-4 flex w-full flex-row flex-wrap gap-2">
         {selectedUsers.length === 0 ? (
-          <div className="rounded-full border-2 border-dashed border-gray-600 px-3 py-1 text-sm font-medium text-gray-600">
+          <div className="rounded border-2 border-dashed border-gray-700 px-3 py-1 text-sm font-semibold text-gray-700">
             No User Selected
           </div>
         ) : (
-          selectedUsers.map((user) => {
-            return (
-              <button
-                key={user.id}
-                onClick={handleClearUser(user)}
-                className="rounded-full border-2 border-transparent bg-primary-700 px-3 py-1 text-sm font-medium text-gray-300"
-              >
-                {user.display_name}
-              </button>
-            );
-          })
+          selectedUsers.map((user) => (
+            <Pill
+              key={user.id}
+              onClick={handleClearUser(user)}
+              label={user.display_name ?? user.id}
+            />
+          ))
         )}
       </div>
 
@@ -111,18 +102,21 @@ export function ComboboxUsers({ users, max = 1 }: Props) {
         immediate
         value={selectedUsers}
         onChange={setSelectedUsers}
+        name="users"
       >
         <ComboboxInput
-          ref={inputRef}
-          displayValue={handleDisplayUser}
-          className="rounded border-2 border-gray-600 bg-gray-800 p-3 placeholder:text-gray-400 disabled:border-transparent disabled:placeholder:text-gray-600"
+          className="field-input"
           onChange={handleInputChange}
           disabled={isAtSelectedMax}
-          placeholder="Search for users..."
+          placeholder={
+            isAtSelectedMax
+              ? "Max users have been selected"
+              : "Search for users..."
+          }
         />
         <ComboboxOptions
           anchor="bottom"
-          className="max-h-16 w-[--input-width] gap-2 overflow-y-scroll rounded bg-gray-800/60 p-2 backdrop-blur [--anchor-gap:12px] empty:hidden aria-disabled:hidden"
+          className="max-h-16 w-[--input-width] gap-2 overflow-y-scroll rounded bg-gray-950/80 p-2 backdrop-blur-lg [--anchor-gap:16px] empty:hidden aria-disabled:hidden"
           aria-disabled={isAtSelectedMax}
         >
           {filteredUsers.map((user) => {

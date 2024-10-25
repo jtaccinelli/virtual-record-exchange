@@ -10,7 +10,7 @@ import { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import "./styles.css";
 
 import { Favicon } from "@app/components/favicon";
-import { Header } from "@app/components/header";
+import { Footer } from "@app/components/footer";
 import { DialogSignIn } from "@app/components/dialog-sign-in";
 import { DialogRefreshSession } from "@app/components/dialog-refresh-session";
 
@@ -53,10 +53,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="h-full bg-gray-900 p-4 text-white ">
-        <main className="mx-auto h-full w-full max-w-screen-sm rounded-lg bg-gray-950">
-          <Header />
+      <body className="h-full bg-gray-800 p-4 text-white ">
+        <main className="mx-auto h-full w-full max-w-screen-sm overflow-y-scroll rounded-lg bg-gray-900">
           {children}
+          <Footer />
         </main>
         <DialogSignIn />
         <DialogRefreshSession />

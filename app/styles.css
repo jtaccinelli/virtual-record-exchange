@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  /* Buttons */
+
   .btn {
-    @apply flex h-11 items-center gap-4 rounded-full border-t border-white/20 px-8 font-semibold transition-colors;
+    @apply flex h-11 items-center gap-4 rounded-full px-8 font-semibold transition-colors hover:cursor-pointer;
   }
 
   .btn-primary {
@@ -13,5 +15,12 @@
 
   .btn-secondary {
     @apply bg-gray-700;
+  }
+
+  /* Fields */
+  .field-input {
+    @apply rounded bg-gray-950 p-3
+         placeholder:font-medium placeholder:text-gray-600
+         disabled:bg-gray-800 disabled:placeholder:text-gray-900;
   }
 }
