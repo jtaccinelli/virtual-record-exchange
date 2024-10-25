@@ -25,7 +25,7 @@ export function Dialog({
       <DialogPanel
         className={clsx(
           "fixed bottom-0 left-1/2",
-          "w-full max-w-screen-sm -translate-x-1/2 rounded-t-lg",
+          "max-h-[90vh] w-full max-w-screen-sm -translate-x-1/2 overflow-y-scroll rounded-t-lg",
           "bg-gray-900 text-white",
           "focus:outline-none",
           className,
