@@ -7,7 +7,7 @@ export function Header() {
 
   return (
     <div className="sticky top-0 p-3">
-      <div className="flex h-14 items-center justify-between gap-4 rounded border-t border-gray-800 bg-gray-900/80 pl-3 pr-6 backdrop-blur">
+      <div className="flex h-14 items-center justify-between gap-4 rounded bg-black/80 pl-3 pr-6 backdrop-blur">
         {!user ? (
           <div className="size-10 rounded-full bg-gray-800" />
         ) : (

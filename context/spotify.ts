@@ -17,11 +17,15 @@ export class SpotifyClient {
     const headers = new Headers(options?.headers ?? {});
     headers.set("Authorization", `Bearer ${this.accessToken}`);
 
-    const response = await fetch(endpoint, {
-      ...options,
-      headers,
-    });
+    try {
+      const response = await fetch(endpoint, {
+        ...options,
+        headers,
+      });
 
-    return await response.json<Response>();
+      return await response.json<Response>();
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
