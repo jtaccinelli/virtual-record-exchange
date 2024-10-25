@@ -5,7 +5,7 @@ type Props = ComponentProps<"img"> & {
 };
 
 export function SpotifyImage({ image, ...props }: Props) {
-  if (!image) return null;
+  if (!image) return <div {...props}></div>;
 
   return (
     <img src={image.url} width={image.width} height={image.height} {...props} />
