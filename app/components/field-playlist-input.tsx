@@ -1,9 +1,11 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { Description, Field, Input, Label } from "@headlessui/react";
 
 import { loader } from "@app/routes/api.playlist.fetch";
 import { CardPlaylist } from "./card-playlist";
+
+const URL_STARTER = "https://open.spotify.com/playlist/";
 
 export function FieldPlaylistInput() {
   const [playlistUrl, setPlaylistUrl] = useState<string>("");
@@ -34,13 +36,14 @@ export function FieldPlaylistInput() {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    if (!value.startsWith("https://open.spotify.com/playlist/")) return;
     const id = value.split("?").shift()?.split("/").pop();
     setPlaylistId(id ?? "");
     setPlaylistUrl(value);
   };
 
   const handleClearInput = () => {
-    setPlaylistId("undefined");
+    setPlaylistId("");
     setPlaylistUrl("");
   };
 
@@ -64,12 +67,23 @@ export function FieldPlaylistInput() {
       <input type="hidden" name="contributor-ids" value={contributorIds} />
       <Input
         className="field-input mb-4"
-        placeholder="https://open.spotify.com/playlist/..."
+        placeholder={`${URL_STARTER}...`}
         value={playlistUrl}
         disabled={!!playlistId}
         onChange={handleChange}
       />
       <CardPlaylist playlist={playlist} />
+      {!fetcher.data?.hasConfig ? null : (
+        <div className="mt-2 flex justify-between rounded bg-primary-950 p-4">
+          <p>This playlist already has a form created.</p>
+          <Link
+            to={`/vote/${playlistId}`}
+            className="text-primary-600 underline underline-offset-2"
+          >
+            Go There
+          </Link>
+        </div>
+      )}
     </Field>
   );
 }

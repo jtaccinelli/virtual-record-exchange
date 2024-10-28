@@ -9,8 +9,6 @@ export async function action({ context, request }: ActionFunctionArgs) {
   const contributorVoteCount = form.get("contributor-vote-count");
   const trackVoteCount = form.get("track-vote-count");
 
-  console.log(playlistId, contributorIds, contributorVoteCount, trackVoteCount);
-
   if (
     typeof playlistId !== "string" ||
     typeof contributorIds !== "string" ||
