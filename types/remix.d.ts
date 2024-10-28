@@ -1,12 +1,12 @@
-import { SpotifyClient } from "context/spotify";
-
 // Cloudflare Variables Set Up
 type PlatformProxy = import("wrangler").PlatformProxy;
 type Cloudflare = Omit<PlatformProxy<Env>, "dispose">;
 
 // Import Context Types
+type SpotifyClient = import("context/spotify").SpotifyClient;
 type KVSession = import("context/session").KVSession;
 type SpotifyAuth = import("context/auth").SpotifyAuth;
+type Database = import("context/database").Database;
 
 export * from "@remix-run/cloudflare";
 declare module "@remix-run/cloudflare" {
@@ -25,6 +25,7 @@ declare module "@remix-run/cloudflare" {
 
   interface AppLoadContext extends CloudflareContext {
     session: KVSession;
+    db: Database;
     auth: SpotifyAuth;
     spotify: SpotifyClient;
   }

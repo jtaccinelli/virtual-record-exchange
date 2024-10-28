@@ -1,13 +1,10 @@
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  redirect,
-} from "@remix-run/cloudflare";
+import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 
 import { config } from "config";
 import { HeaderVote } from "@app/components/header-vote";
 import { FormVote } from "@app/components/form-vote";
+import { eq } from "drizzle-orm";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -40,17 +37,22 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     }),
   );
 
+  const formConfig = await context.db.orm
+    .select()
+    .from(context.db.configs)
+    .where(eq(context.db.configs.playlist_id, params.id));
+
   return {
     playlist,
     users: users.filter((user) => !!user),
     tracks: tracks.filter((track) => !!track),
+    config: formConfig,
   };
 }
 
-export async function action({ request }: ActionFunctionArgs) {}
-
 export default function Page() {
-  const { playlist, users, tracks } = useLoaderData<typeof loader>();
+  const { playlist, users, tracks, config } = useLoaderData<typeof loader>();
+  console.log("ballot", config);
 
   return (
     <div className="flex flex-col gap-3">

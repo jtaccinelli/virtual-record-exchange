@@ -6,3 +6,8 @@ compatibility_date = "2024-04-18"
 [[kv_namespaces]]
 binding = "SESSION"
 id = "f5ab5a60780f43628d5d941ed706b431"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vre"
+database_id = "b290d26a-83a0-4486-8b40-4bc7e55fdfe0"
