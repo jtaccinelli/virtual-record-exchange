@@ -14,8 +14,6 @@ export async function action({ context, request }: ActionFunctionArgs) {
   const honourableMentions = form.get("honourable-mentions");
   const shameVotes = form.get("shame-votes");
 
-  console.log("keys", playlistId, contributorIds, trackIds);
-
   if (
     typeof playlistId !== "string" ||
     typeof contributorIds !== "string" ||

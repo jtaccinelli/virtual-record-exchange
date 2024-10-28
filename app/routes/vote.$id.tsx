@@ -5,6 +5,8 @@ import { config } from "config";
 import { HeaderVote } from "@app/components/header-vote";
 import { FormVote } from "@app/components/form-vote";
 import { eq } from "drizzle-orm";
+import { DialogRevoteForm } from "@app/components/dialog-revote-form";
+import { DialogCantVote } from "@app/components/dialog-cant-vote";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -18,22 +20,10 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 
   if (!playlist) throw redirect("/");
 
-  const tracks = playlist.tracks.items
-    .filter((item) => {
-      return context.user?.id !== item.added_by.id;
-    })
-    .map((item) => {
-      return item.track;
-    });
-
   const [...userIds] = new Set(
-    playlist.tracks.items
-      .map((item) => {
-        return item.added_by.id;
-      })
-      .filter((id) => {
-        return context.user?.id !== id;
-      }),
+    playlist.tracks.items.map((item) => {
+      return item.added_by.id;
+    }),
   );
 
   const users = await Promise.all(
@@ -45,26 +35,68 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     }),
   );
 
+  const tracks = playlist.tracks.items
+    .filter((item) => {
+      return context.user?.id !== item.added_by.id;
+    })
+    .map((item) => {
+      return item.track;
+    });
+
   const formConfig = await context.db.orm
     .select()
     .from(context.db.configs)
     .where(eq(context.db.configs.playlist_id, params.id));
 
+  const votes = await context.db.orm
+    .select()
+    .from(context.db.votes)
+    .where(eq(context.db.votes.playlist_id, params.id));
+
+  const previousVote = votes.find((vote) => {
+    return vote.voter_id === context?.user?.id;
+  });
+
+  const hasNotContributed = !userIds.some((id) => id === context?.user?.id);
+
   return {
     playlist,
-    users: users.filter((user) => !!user),
+    users: users
+      .filter((user) => !!user)
+      .filter((user) => user.id !== context?.user?.id),
+    contributors: users.filter((user) => !!user),
     tracks: tracks.filter((track) => !!track),
-    config: formConfig,
+    config: formConfig[0],
+    votes,
+    previousVote,
+    hasNotContributed,
   };
 }
 
 export default function Page() {
-  const { playlist, users, tracks, config } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+
+  if (data.hasNotContributed) {
+    return <DialogCantVote />;
+  }
+
+  const { playlist, users, contributors, tracks, config, votes, previousVote } =
+    data;
 
   return (
     <div className="flex flex-col gap-3">
-      <HeaderVote playlist={playlist} users={users} />
-      <FormVote tracks={tracks} users={users} playlist={playlist} />
+      <HeaderVote
+        playlist={playlist}
+        contributors={contributors}
+        votes={votes}
+      />
+      <FormVote
+        tracks={tracks}
+        users={users}
+        playlist={playlist}
+        config={config}
+      />
+      <DialogRevoteForm vote={previousVote} playlist={playlist} />
     </div>
   );
 }
