@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import { Description, Field, Input, Label } from "@headlessui/react";
 
 import { loader } from "@app/routes/api.playlist.fetch";
-import { SpotifyImage } from "./spotify-image";
+import { CardPlaylist } from "./card-playlist";
 
 export function FieldPlaylistInput() {
   const [playlistUrl, setPlaylistUrl] = useState<string>("");
@@ -18,6 +18,18 @@ export function FieldPlaylistInput() {
 
   const playlist = useMemo(() => {
     return fetcher.data?.playlist;
+  }, [fetcher.data]);
+
+  const contributorIds = useMemo(() => {
+    if (!fetcher.data?.playlist) return [];
+
+    const [...userIds] = new Set(
+      fetcher.data.playlist.tracks.items.map((item) => {
+        return item.added_by.id;
+      }),
+    );
+
+    return userIds;
   }, [fetcher.data]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +60,8 @@ export function FieldPlaylistInput() {
       <Description className="mb-4 text-sm text-gray-500">
         Paste in a playlist URL below
       </Description>
-      <input type="hidden" name="playlistId" value={playlistId} />
+      <input type="hidden" name="playlist-id" value={playlistId} />
+      <input type="hidden" name="contributor-ids" value={contributorIds} />
       <Input
         className="field-input mb-4"
         placeholder="https://open.spotify.com/playlist/..."
@@ -56,17 +69,7 @@ export function FieldPlaylistInput() {
         disabled={!!playlistId}
         onChange={handleChange}
       />
-      {!playlistId ? null : !playlist ? null : (
-        <div className="flex items-center gap-4 rounded border-2 border-gray-800 bg-gray-900 p-2">
-          <SpotifyImage image={playlist.images[0]} className="size-20" />
-          <div>
-            <p className="text-lg font-bold">{playlist.name}</p>
-            <p className="mb-1 text-sm font-medium text-gray-500">
-              {playlist.tracks.total} tracks
-            </p>
-          </div>
-        </div>
-      )}
+      <CardPlaylist playlist={playlist} />
     </Field>
   );
 }
