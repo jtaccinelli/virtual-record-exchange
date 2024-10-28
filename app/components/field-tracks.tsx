@@ -100,6 +100,11 @@ export function FieldTracks({ tracks, max = 3 }: Props) {
         onChange={setSelectedTracks}
         name="tracks"
       >
+        <input
+          type="hidden"
+          name="track-ids"
+          value={selectedTracks.map((track) => track.id).join(",")}
+        />
         <ComboboxInput
           className="field-input"
           onChange={handleInputChange}

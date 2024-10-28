@@ -1,6 +1,4 @@
 import { CloudflareContext } from "@remix-run/cloudflare";
-import { config } from "config";
-
 import { drizzle } from "drizzle-orm/d1";
 import { sqliteTable, int, text } from "drizzle-orm/sqlite-core";
 

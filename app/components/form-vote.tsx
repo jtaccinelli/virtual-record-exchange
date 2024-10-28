@@ -14,7 +14,11 @@ type Props = {
 
 export function FormVote({ tracks, users, playlist, config }: Props) {
   return (
-    <Form className="flex flex-col gap-12 px-6 py-12" action="/api/vote/submit">
+    <Form
+      className="flex flex-col gap-12 px-6 py-12"
+      action="/api/vote/submit"
+      method="post"
+    >
       <FieldTracks tracks={tracks} max={config.track_vote_count ?? 3} />
       <FieldUsers users={users} max={config.contributor_vote_count ?? 1} />
       {!config.enable_honourable_mentions ? null : (
@@ -29,6 +33,7 @@ export function FormVote({ tracks, users, playlist, config }: Props) {
           label="Are there any tracks or contributors that deserve shame votes?"
         />
       )}
+
       <input type="hidden" name="playlist-id" value={playlist.id} />
       <button type="submit" className="btn btn-primary self-start">
         Submit Vote

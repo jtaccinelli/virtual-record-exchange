@@ -104,6 +104,11 @@ export function FieldUsers({ users, max = 1 }: Props) {
         onChange={setSelectedUsers}
         name="users"
       >
+        <input
+          type="hidden"
+          name="user-ids"
+          value={selectedUsers.map((user) => user.id).join(",")}
+        />
         <ComboboxInput
           className="field-input"
           onChange={handleInputChange}
