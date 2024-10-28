@@ -7,7 +7,7 @@ export function FormCreate() {
   return (
     <Form
       className="flex flex-col gap-6 px-6 py-12"
-      action="/api/vote/create"
+      action="/api/config/create"
       method="post"
     >
       <FieldPlaylistInput />

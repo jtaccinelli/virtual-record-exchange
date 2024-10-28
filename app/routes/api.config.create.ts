@@ -9,15 +9,15 @@ export async function action({ context, request }: ActionFunctionArgs) {
   const form = await request.formData();
 
   const playlistId = form.get("playlist-id");
-  const contributorIds = form.get("user-ids");
-  const trackIds = form.get("track-ids");
-  const honourableMentions = form.get("honourable-mentions");
-  const shameVotes = form.get("shame-votes");
+  const contributorIds = form.get("contributor-ids");
+  const contributorVoteCount = form.get("contributor-vote-count");
+  const trackVoteCount = form.get("track-vote-count");
 
   if (
     typeof playlistId !== "string" ||
     typeof contributorIds !== "string" ||
-    typeof trackIds !== "string"
+    typeof contributorVoteCount !== "string" ||
+    typeof trackVoteCount !== "string"
   ) {
     throw new Error("Data for config creation was sent with incorrect format");
   }
@@ -27,14 +27,16 @@ export async function action({ context, request }: ActionFunctionArgs) {
     throw redirect("/");
   }
 
-  await context.db.orm.insert(context.db.votes).values({
+  await context.db.orm.insert(context.db.configs).values({
     playlist_id: playlistId,
-    voter_id: context.user.id,
+    created_by: context.user.id,
     contributor_ids: contributorIds,
-    track_ids: trackIds,
-    honourable_mentions: honourableMentions,
-    shame_votes: shameVotes,
+    contributor_vote_count: parseInt(contributorVoteCount),
+    track_vote_count: parseInt(trackVoteCount),
+    enable_honourable_mentions: 1,
+    enable_shame_votes: 1,
+    enable_voting: 1,
   });
 
-  throw redirect("/");
+  throw redirect("/vote/" + playlistId);
 }

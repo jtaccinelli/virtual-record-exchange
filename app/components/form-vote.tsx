@@ -16,7 +16,7 @@ export function FormVote({ tracks, users, playlist, config }: Props) {
   return (
     <Form
       className="flex flex-col gap-12 px-6 py-12"
-      action="/api/vote/submit"
+      action="/api/vote/create"
       method="post"
     >
       <FieldTracks tracks={tracks} max={config.track_vote_count ?? 3} />
