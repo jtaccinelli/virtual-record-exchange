@@ -23,11 +23,7 @@ export function FormCreate() {
         defaultValue={1}
         values={[1, 2, 3, 4, 5]}
       />
-      <button
-        type="submit"
-        className="btn btn-primary self-start"
-        onClick={() => console.log("testing")}
-      >
+      <button type="submit" className="btn btn-primary self-start">
         Create Voting Form
       </button>
     </Form>

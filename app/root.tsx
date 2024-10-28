@@ -14,8 +14,6 @@ import { Footer } from "@app/components/footer";
 import { DialogSignIn } from "@app/components/dialog-sign-in";
 import { DialogRefreshSession } from "@app/components/dialog-refresh-session";
 
-import { config } from "config";
-
 export function meta() {
   return [
     { title: "Virtual Record Exchange" },
@@ -31,15 +29,10 @@ export async function loader({ context }: LoaderFunctionArgs) {
   const isLoggedIn = !!context.auth.accessToken;
   const isTokenExpired = context.auth.expiresAt < Date.now();
 
-  type Response = SpotifyApi.CurrentUsersProfileResponse;
-  const user = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.me,
-  );
-
   return {
     isLoggedIn,
     isTokenExpired,
-    user,
+    user: context.user,
   };
 }
 
