@@ -1,7 +1,11 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
-import { config } from "config";
 
 export async function action({ context, request }: ActionFunctionArgs) {
+  if (!context.user) {
+    console.error("User was not signed in");
+    throw redirect("/");
+  }
+
   const form = await request.formData();
 
   const playlistId = form.get("playlist-id");
@@ -23,19 +27,9 @@ export async function action({ context, request }: ActionFunctionArgs) {
     throw redirect("/");
   }
 
-  type Response = SpotifyApi.CurrentUsersProfileResponse;
-  const user = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.me,
-  );
-
-  if (!user) {
-    console.error("User was not signed in");
-    throw redirect("/");
-  }
-
   await context.db.orm.insert(context.db.configs).values({
     playlist_id: playlistId,
-    created_by: user.id,
+    created_by: context.user.id,
     contributor_ids: contributorIds,
     contributor_vote_count: parseInt(contributorVoteCount),
     track_vote_count: parseInt(trackVoteCount),

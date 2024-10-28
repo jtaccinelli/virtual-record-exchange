@@ -28,5 +28,6 @@ declare module "@remix-run/cloudflare" {
     db: Database;
     auth: SpotifyAuth;
     spotify: SpotifyClient;
+    user?: SpotifyApi.UserProfileResponse;
   }
 }

@@ -19,27 +19,21 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  type Response = SpotifyApi.CurrentUsersProfileResponse;
-  const user = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.me,
-  );
-
-  if (!user) return {};
+  if (!context?.user?.id) return {};
 
   const configs = await context.db.orm
     .select()
     .from(context.db.configs)
     .where(
       or(
-        like(context.db.configs.contributor_ids, `%${user.id}%`),
-        eq(context.db.configs.created_by, user.id),
+        like(context.db.configs.contributor_ids, `%${context.user.id}%`),
+        eq(context.db.configs.created_by, context.user.id),
       ),
     );
 
   const playlists = await Promise.all(
     configs.map((item) => {
       type Response = SpotifyApi.PlaylistObjectFull;
-      console.log(item);
       return context.spotify.fetch<Response>(
         config.spotify.endpoints.playlists + `/${item.playlist_id}`,
       );
@@ -48,19 +42,24 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
   const createdIds = configs
     .filter((item) => {
-      return item.created_by == user.id;
+      if (!context.user?.id) return true;
+      return item.created_by == context.user.id;
     })
     .map((item) => item.playlist_id);
 
   const openIds = configs
     .filter((item) => {
-      return item.contributor_ids.includes(user.id) && !!item.enable_voting;
+      if (!context.user?.id) return true;
+      const isContributor = item.contributor_ids.includes(context.user.id);
+      return isContributor && !!item.enable_voting;
     })
     .map((item) => item.playlist_id);
 
   const closedIds = configs
     .filter((item) => {
-      return item.contributor_ids.includes(user.id) && !item.enable_voting;
+      if (!context.user?.id) return true;
+      const isContributor = item.contributor_ids.includes(context.user.id);
+      return isContributor && !item.enable_voting;
     })
     .map((item) => item.playlist_id);
 
