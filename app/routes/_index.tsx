@@ -24,10 +24,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
     config.spotify.endpoints.me,
   );
 
-  if (!user) {
-    console.error("User was not signed in");
-    throw redirect("/");
-  }
+  if (!user) return {};
 
   const configs = await context.db.orm
     .select()
@@ -78,6 +75,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function Index() {
   const { playlists, createdIds, openIds, closedIds } =
     useLoaderData<typeof loader>();
+
+  if (!playlists) return null;
 
   return (
     <div>
