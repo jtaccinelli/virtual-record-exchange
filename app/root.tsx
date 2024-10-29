@@ -57,7 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="h-full bg-gray-800 text-white md:p-4 ">
         <main className="mx-auto h-full w-full max-w-screen-sm overflow-y-scroll bg-gray-900 md:rounded-lg">
-          {children}
+          <div className="min-h-full">{children}</div>
           <Footer />
         </main>
         <DialogSignIn />
