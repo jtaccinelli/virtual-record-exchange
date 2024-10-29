@@ -6,7 +6,7 @@ import { FieldPlaylistInput } from "./field-playlist-input";
 export function FormCreate() {
   return (
     <Form
-      className="flex flex-col gap-6 px-6 py-12"
+      className="flex flex-col gap-6 px-4 py-6"
       action="/api/config/create"
       method="post"
     >

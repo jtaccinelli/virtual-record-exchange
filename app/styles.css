@@ -6,11 +6,11 @@
   /* Buttons */
 
   .btn {
-    @apply flex h-11 items-center gap-4 rounded-full px-8 font-semibold transition-colors hover:cursor-pointer;
+    @apply flex h-11 items-center gap-4 rounded-full px-6 font-semibold transition-colors hover:cursor-pointer;
   }
 
   .btn-primary {
-    @apply bg-primary-700 text-primary-50 hover:bg-primary-800 hover:text-white;
+    @apply bg-primary-600 text-primary-50 hover:bg-primary-800 hover:text-white;
   }
 
   .btn-secondary {

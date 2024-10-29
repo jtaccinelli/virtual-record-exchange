@@ -18,16 +18,16 @@ export function ListPlaylists({
 }: Props) {
   const filteredPlaylists = useMemo(() => {
     return playlists.filter((playlist) => {
-      return ids.some((id) => playlist.id);
+      return ids.some((id) => id === playlist.id);
     });
   }, [ids, playlists]);
 
   return (
     <div className="flex flex-col">
-      <p className="sticky top-0 border-b-2 border-gray-800 bg-gray-900 px-6 py-4 text-lg font-medium">
+      <p className="sticky top-0 border-b-2 border-gray-800 bg-gray-900 p-4 text-lg font-medium">
         {title}
       </p>
-      <div className="flex flex-col gap-4 p-6">
+      <div className="flex flex-col gap-4 p-4">
         {filteredPlaylists.length === 0 ? (
           <CardPlaylist />
         ) : (

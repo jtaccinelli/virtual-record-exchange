@@ -46,8 +46,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="h-full bg-gray-800 p-4 text-white ">
-        <main className="mx-auto h-full w-full max-w-screen-sm overflow-y-scroll rounded-lg bg-gray-900">
+      <body className="h-full bg-gray-800 text-white md:p-4 ">
+        <main className="mx-auto h-full w-full max-w-screen-sm overflow-y-scroll bg-gray-900 md:rounded-lg">
           {children}
           <Footer />
         </main>

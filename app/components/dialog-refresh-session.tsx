@@ -12,9 +12,9 @@ export function DialogRefreshSession() {
       className="flex flex-col items-center px-8 py-12"
     >
       <span className="mb-6 text-6xl">❤️‍🩹</span>
-      <p className="mb-1 text-3xl font-bold">Oh no!</p>
+      <p className="mb-1 text-2xl font-bold">Oh no!</p>
       <p className="mb-8 text-gray-500">Looks like your session has expired</p>
-      <div className="flex gap-2">
+      <div className="flex flex-col items-center gap-2 md:flex-row">
         <Link to="/api/auth/refresh" className="btn btn-primary">
           Refresh Session
         </Link>

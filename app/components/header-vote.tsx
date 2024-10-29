@@ -25,11 +25,13 @@ export function HeaderVote({ playlist, contributors, votes }: Props) {
   }, [contributors, votes]);
 
   return (
-    <div className="flex flex-col border-b-2 border-gray-800 p-6 pt-20">
+    <div className="flex flex-col border-b-2 border-gray-800 p-4 pt-16">
       <p className="mb-1 text-sm text-gray-500">Playlist Voting Form</p>
-      <h3 className="mb-4 text-2xl font-bold">{playlist.name}</h3>
-
-      <div className="flex flex-wrap items-center gap-1">
+      <h3 className="mb-4 text-xl font-bold">{playlist.name}</h3>
+      <p className="mb-2 basis-full text-sm font-semibold text-gray-500">
+        {voted.length} of {contributors.length} votes submitted
+      </p>
+      <div className="flex items-center gap-1 overflow-x-scroll">
         {voted.map((user) => {
           return (
             <SpotifyImage
@@ -48,9 +50,6 @@ export function HeaderVote({ playlist, contributors, votes }: Props) {
             />
           );
         })}
-        <p className="mt-2 basis-full text-sm font-semibold text-gray-500">
-          {voted.length} of {contributors.length} votes submitted
-        </p>
       </div>
     </div>
   );

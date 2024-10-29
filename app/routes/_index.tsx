@@ -41,6 +41,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   );
 
   const createdIds = configs
+    .filter((item) => !!item)
     .filter((item) => {
       if (!context.user?.id) return true;
       return item.created_by == context.user.id;
@@ -48,6 +49,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
     .map((item) => item.playlist_id);
 
   const openIds = configs
+    .filter((item) => !!item)
     .filter((item) => {
       if (!context.user?.id) return true;
       const isContributor = item.contributor_ids.includes(context.user.id);
@@ -56,6 +58,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
     .map((item) => item.playlist_id);
 
   const closedIds = configs
+    .filter((item) => !!item)
     .filter((item) => {
       if (!context.user?.id) return true;
       const isContributor = item.contributor_ids.includes(context.user.id);
@@ -74,6 +77,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function Index() {
   const { playlists, createdIds, openIds, closedIds } =
     useLoaderData<typeof loader>();
+
+  console.log(closedIds, openIds);
 
   if (!playlists) return null;
 

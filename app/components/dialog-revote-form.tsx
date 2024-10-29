@@ -13,13 +13,16 @@ export function DialogRevoteForm({ vote, playlist }: Props) {
   if (!vote) return;
 
   return (
-    <Dialog open={!!vote} className="flex flex-col items-center px-8 py-12">
+    <Dialog
+      open={!!vote}
+      className="flex flex-col items-center px-8 py-12 text-center"
+    >
       <span className="mb-6 text-6xl">🤔</span>
-      <p className="mb-1 text-3xl font-bold">You've already voted!</p>
+      <p className="mb-1 text-2xl font-bold">You've already voted!</p>
       <p className="mb-8 text-gray-500">
         You can always resubmit though. Click below to clear your previous vote.
       </p>
-      <div className="flex gap-2">
+      <div className="flex flex-col items-center gap-2 md:flex-row">
         <Form action="/api/vote/delete" method="post">
           <input type="hidden" name="vote-id" value={vote.id} />
           <input type="hidden" name="playlist-id" value={playlist.id} />

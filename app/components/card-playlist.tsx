@@ -27,12 +27,12 @@ export function CardPlaylist({ playlist, hasVoteLink, hasResultsLink }: Props) {
   }, [playlist]);
 
   return (
-    <div className="flex w-full items-center gap-4 rounded bg-gray-800 p-2">
+    <div className="flex w-full flex-col items-center gap-4 rounded bg-gray-800 p-2 md:flex-row">
       <SpotifyImage
         image={playlist?.images[0]}
-        className="size-24 shrink-0 rounded bg-gray-900"
+        className="aspect-square w-full shrink-0 rounded bg-gray-900 md:w-24"
       />
-      <div className="flex-grow">
+      <div className="flex w-full flex-grow flex-col overflow-hidden px-2 pb-4 md:p-0">
         <p className="mb-1 text-sm font-medium text-gray-500">
           {playlist?.tracks.total ?? 0} tracks
         </p>

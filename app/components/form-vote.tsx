@@ -15,7 +15,7 @@ type Props = {
 export function FormVote({ tracks, users, playlist, config }: Props) {
   return (
     <Form
-      className="flex flex-col gap-12 px-6 py-12"
+      className="flex flex-col gap-8 p-4"
       action="/api/vote/create"
       method="post"
     >
