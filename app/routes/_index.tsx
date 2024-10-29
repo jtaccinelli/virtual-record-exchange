@@ -78,9 +78,7 @@ export default function Index() {
   const { playlists, createdIds, openIds, closedIds } =
     useLoaderData<typeof loader>();
 
-  console.log(closedIds, openIds);
-
-  if (!playlists) return null;
+  if (typeof playlists === "undefined") return null;
 
   return (
     <div>
