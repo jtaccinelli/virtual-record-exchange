@@ -6,29 +6,23 @@ export function Footer() {
   const { user } = useRootLoaderData();
 
   return (
-    <div className="sticky bottom-0 flex items-center justify-between border-t-2 border-gray-800 bg-gray-900 p-4 pr-6">
-      <Link to="/" className="flex items-center gap-3">
+    <div className="sticky bottom-0 flex items-center justify-between bg-gray-950 p-4">
+      <div className="flex items-center gap-3">
         <SpotifyImage
           image={user?.images?.[0]}
           alt="Profile"
-          className="size-10 rounded-full"
+          className="size-8 rounded-full"
         />
-        <div className="flex flex-col text-sm">
-          <span className="text-gray-500">Signed in as</span>
-          <span
-            className="ext-gray-300 
-          font-medium"
-          >
-            {user?.display_name}
-          </span>
-        </div>
-      </Link>
-      <Link
-        to="/api/auth/sign-out"
-        className="flex h-11 items-center text-sm text-primary-700 underline underline-offset-4"
-      >
-        Sign out
-      </Link>
+        <p className="text flex flex-col text-white">
+          <span className="text-gray-300">Voting on behalf of</span>
+          <span className="font-semibold">{user?.display_name}</span>
+        </p>
+      </div>
+      <nav className="flex items-center gap-4 pr-4">
+        <Link to="/api/auth/sign-out" className="link">
+          Sign Out
+        </Link>
+      </nav>
     </div>
   );
 }
