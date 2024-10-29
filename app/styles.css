@@ -49,6 +49,6 @@
   }
 
   .link {
-    @apply text-sm font-normal underline underline-offset-2;
+    @apply text-sm font-medium underline underline-offset-4;
   }
 }
