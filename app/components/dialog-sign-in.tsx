@@ -1,22 +1,21 @@
+import { Link } from "@remix-run/react";
 import { useRootLoaderData } from "@app/hooks/use-root-loader";
 
-import { Dialog } from "./dialog";
-import { Link } from "@remix-run/react";
+import { DialogBasic } from "./dialog-basic";
 
 export function DialogSignIn() {
   const { isLoggedIn } = useRootLoaderData();
 
   return (
-    <Dialog
+    <DialogBasic
       open={!isLoggedIn}
-      className="flex flex-col items-center px-8 py-12 text-center"
+      emoji="💿"
+      heading="Welcome to the VRE!"
+      subheading="Trading tunes since '24"
     >
-      <span className="mb-6 text-6xl">💿</span>
-      <p className="mb-1 text-2xl font-bold">Welcome to the VRE!</p>
-      <p className="mb-8 text-gray-500">Trading tunes since '24</p>
       <Link to="/api/auth/sign-in" className="btn btn-primary">
         Sign in w/ Spotify
       </Link>
-    </Dialog>
+    </DialogBasic>
   );
 }

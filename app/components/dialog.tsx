@@ -1,10 +1,6 @@
 import { ReactNode } from "react";
-import {
-  Dialog as DialogRoot,
-  DialogBackdrop,
-  DialogPanel,
-} from "@headlessui/react";
 import clsx from "clsx";
+import { useUi } from "@app/hooks/use-ui";
 
 type Props = {
   open: boolean;
@@ -15,30 +11,33 @@ type Props = {
 
 export function Dialog({
   open,
+  className,
   onClose = () => {},
   children,
-  className,
 }: Props) {
+  const ui = useUi({
+    closed: !open,
+  });
+
   return (
-    <DialogRoot
-      open={open}
-      onClose={onClose}
-      transition
-      className="group transition-all data-[closed]:opacity-0"
+    <div
+      data-ui={ui}
+      className="group fixed inset-0 z-40 transition-opacity ui-[closed]:pointer-events-none ui-[closed]:opacity-0"
     >
-      <DialogBackdrop className="fixed inset-0 bg-gray-950/60 backdrop-blur-lg" />
-      <DialogPanel
-        className={clsx(
-          "fixed bottom-0 left-1/2",
-          "max-h-[80vh] w-full max-w-screen-sm -translate-x-1/2 overflow-y-scroll rounded-t-xl",
-          "bg-gray-900 text-white transition-all",
-          "focus:outline-none",
-          "group-data-[closed]:translate-y-1/2",
-          className,
-        )}
-      >
-        {children}
-      </DialogPanel>
-    </DialogRoot>
+      <button
+        className="absolute inset-0 z-0 bg-gray-950/80"
+        onClick={onClose}
+      />
+      <div className="absolute bottom-0 left-1/2 z-10 w-full max-w-screen-sm -translate-x-1/2 px-2">
+        <div
+          className={clsx(
+            "max-h-[75vh] w-full overflow-y-scroll rounded-t-xl bg-black/50 backdrop-blur transition-transform group-ui-[closed]:translate-y-1/2",
+            className,
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
