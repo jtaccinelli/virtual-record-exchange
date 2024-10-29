@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 
 import { config } from "config";
 import { HeaderVote } from "@app/components/header-vote";
@@ -7,11 +7,22 @@ import { FormVote } from "@app/components/form-vote";
 import { eq } from "drizzle-orm";
 import { DialogRevoteForm } from "@app/components/dialog-revote-form";
 import { DialogCantVote } from "@app/components/dialog-cant-vote";
+import { DialogDeleteForm } from "@app/components/dialog-delete-form";
+import { DialogCloseVoting } from "@app/components/dialog-close-voting";
 
 // 6wVtemFdsmYio00dj7cojJ
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!params.id || !context.user) throw redirect("/");
+
+  const [form] = await context.db.orm
+    .select()
+    .from(context.db.configs)
+    .where(eq(context.db.configs.playlist_id, params.id))
+    .limit(1);
+
+  if (!form) throw redirect(`/`);
+  if (!form.enable_voting) throw redirect(`/results/${params.id}`);
 
   type Response = SpotifyApi.PlaylistObjectFull;
   const playlist = await context.spotify.fetch<Response>(
@@ -43,11 +54,6 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
       return item.track;
     });
 
-  const formConfig = await context.db.orm
-    .select()
-    .from(context.db.configs)
-    .where(eq(context.db.configs.playlist_id, params.id));
-
   const votes = await context.db.orm
     .select()
     .from(context.db.votes)
@@ -58,6 +64,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
   });
 
   const hasNotContributed = !userIds.some((id) => id === context?.user?.id);
+  const isFormCreator = form.created_by === context.user.id;
 
   return {
     playlist,
@@ -66,10 +73,11 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
       .filter((user) => user.id !== context?.user?.id),
     contributors: users.filter((user) => !!user),
     tracks: tracks.filter((track) => !!track),
-    config: formConfig[0],
+    config: form,
     votes,
     previousVote,
     hasNotContributed,
+    isFormCreator,
   };
 }
 
@@ -80,8 +88,16 @@ export default function Page() {
     return <DialogCantVote />;
   }
 
-  const { playlist, users, contributors, tracks, config, votes, previousVote } =
-    data;
+  const {
+    playlist,
+    users,
+    contributors,
+    tracks,
+    config,
+    votes,
+    previousVote,
+    isFormCreator,
+  } = data;
 
   return (
     <div className="flex flex-col gap-3">
@@ -90,6 +106,16 @@ export default function Page() {
         contributors={contributors}
         votes={votes}
       />
+      {!isFormCreator ? null : (
+        <div className="mx-4 mt-2 flex flex-col justify-between gap-2 rounded bg-primary-950 p-4 md:flex-row">
+          <p>You created this form.</p>
+          <div className="flex gap-4">
+            <DialogCloseVoting playlist={playlist} />
+            <DialogDeleteForm playlist={playlist} />
+          </div>
+        </div>
+      )}
+
       <FormVote
         tracks={tracks}
         users={users}
