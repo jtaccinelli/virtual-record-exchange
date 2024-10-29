@@ -19,9 +19,8 @@ export function DialogCreateForm() {
         Create Form
       </button>
       <Dialog open={isOpen} onClose={handleClose} className="flex flex-col">
-        <div className="border-b-2 border-gray-800 px-4 pb-4 pt-8">
-          <p className="mb-1 text-2xl font-bold">Create a Form</p>
-          <p className="text-gray-500">Create a voting form using the below</p>
+        <div className="border-b border-gray-950 p-6">
+          <p className="heading">Create a Form</p>
         </div>
         <FormCreate />
       </Dialog>

@@ -52,7 +52,7 @@ export function CardPlaylist({ playlist, hasVoteLink, hasResultsLink }: Props) {
           <div className="flex items-center gap-2 text-gray-400">
             <p className="text">{playlist?.tracks.total ?? 0} tracks</p>
             <span>•</span>
-            <Link to={playlist.external_urls.spotify}>
+            <Link to={playlist.external_urls.spotify} target="_blank">
               <img
                 src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
                 className="size-4"

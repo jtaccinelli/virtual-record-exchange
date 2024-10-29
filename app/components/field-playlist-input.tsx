@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Link, useFetcher } from "@remix-run/react";
-import { Description, Field, Input, Label } from "@headlessui/react";
+import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 import { loader } from "@app/routes/api.playlist.fetch";
 import { CardPlaylist } from "./card-playlist";
@@ -42,48 +42,45 @@ export function FieldPlaylistInput() {
     setPlaylistUrl(value);
   };
 
-  const handleClearInput = () => {
+  const handleClear = () => {
     setPlaylistId("");
     setPlaylistUrl("");
   };
 
   return (
-    <Field className="flex flex-col">
-      <div className="flex items-center justify-between">
-        <Label className="mb-1 font-medium">What playlist are we using?</Label>
-        {!playlistId ? null : (
-          <button
-            onClick={handleClearInput}
-            className="text-sm font-medium text-primary-600 underline underline-offset-2"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-      <Description className="mb-4 text-sm text-gray-500">
-        Paste in a playlist URL below
-      </Description>
+    <div className="flex flex-col gap-4 px-6 py-8">
       <input type="hidden" name="playlist-id" value={playlistId} />
       <input type="hidden" name="contributor-ids" value={contributorIds} />
-      <Input
-        className="field-input mb-4"
+      <label className="label -mb-4 block">What playlist are we using?</label>
+      <div className="flex justify-between">
+        <p className="text text-gray-400">Paste in a playlist URL below</p>
+        <button
+          type="button"
+          onClick={handleClear}
+          className="link disabled:hidden"
+          disabled={!playlistId}
+        >
+          Clear
+        </button>
+      </div>
+      <input
+        type="url"
         placeholder={`${URL_STARTER}...`}
         value={playlistUrl}
         disabled={!!playlistId}
         onChange={handleChange}
+        className="rounded border-transparent bg-gray-700 text-white placeholder:text-gray-500"
       />
       <CardPlaylist playlist={playlist} />
       {!fetcher.data?.hasConfig ? null : (
-        <div className="mt-2 flex justify-between rounded bg-primary-950 p-4">
-          <p>This playlist already has a form created.</p>
-          <Link
-            to={`/vote/${playlistId}`}
-            className="text-primary-600 underline underline-offset-2"
-          >
+        <div className="flex items-center justify-between gap-3 rounded bg-white px-4 py-3 text-black">
+          <InformationCircleIcon className="h-5 w-5" />
+          <p className="text grow">This playlist already has a form created.</p>
+          <Link to={`/vote/${playlistId}`} className="link">
             Go There
           </Link>
         </div>
       )}
-    </Field>
+    </div>
   );
 }
