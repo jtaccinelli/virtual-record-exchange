@@ -40,14 +40,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
     }),
   );
 
-  const createdIds = configs
-    .filter((item) => !!item)
-    .filter((item) => {
-      if (!context.user?.id) return true;
-      return item.created_by == context.user.id;
-    })
-    .map((item) => item.playlist_id);
-
   const openIds = configs
     .filter((item) => !!item)
     .filter((item) => {
@@ -68,15 +60,13 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
   return {
     playlists: playlists.filter((playlist) => !!playlist),
-    createdIds,
     openIds,
     closedIds,
   };
 }
 
 export default function Index() {
-  const { playlists, createdIds, openIds, closedIds } =
-    useLoaderData<typeof loader>();
+  const { playlists, openIds, closedIds } = useLoaderData<typeof loader>();
 
   if (typeof playlists === "undefined") return null;
 
@@ -94,11 +84,6 @@ export default function Index() {
         playlists={playlists}
         ids={closedIds}
         hasResultsLink
-      />
-      <ListPlaylists
-        playlists={playlists}
-        ids={createdIds}
-        title="Voting Forms You've Created"
       />
     </div>
   );

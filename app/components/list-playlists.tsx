@@ -23,11 +23,11 @@ export function ListPlaylists({
   }, [ids, playlists]);
 
   return (
-    <div className="flex flex-col">
-      <p className="sticky top-0 border-b-2 border-gray-800 bg-gray-900 p-4 text-lg font-medium">
+    <div className="flex flex-col pb-10">
+      <p className="label sticky top-0 border-t border-gray-800 bg-gray-900 p-4">
         {title}
       </p>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-4 px-4 pt-2">
         {filteredPlaylists.length === 0 ? (
           <CardPlaylist />
         ) : (
