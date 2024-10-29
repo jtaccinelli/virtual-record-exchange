@@ -9,49 +9,57 @@ type Props = {
 };
 
 export function CardPlaylist({ playlist, hasVoteLink, hasResultsLink }: Props) {
-  const link = useMemo(() => {
-    if (!playlist) return undefined;
-    if (hasVoteLink) {
-      return {
-        label: "Go Vote",
-        url: `/vote/${playlist.id}`,
-      };
-    }
-    if (hasResultsLink) {
-      return {
-        label: "See Results",
-        url: `/results/${playlist.id}`,
-      };
-    }
-    return undefined;
-  }, [playlist]);
+  if (!playlist)
+    return (
+      <div className="flex w-full items-end overflow-hidden rounded bg-gray-800">
+        <div className="aspect-square w-28 shrink-0 bg-gray-700" />
+        <div className="flex min-w-0 grow flex-col self-stretch">
+          <div className="flex grow items-center p-3">
+            <p className="label truncate font-semibold text-gray-400">
+              No Playlist Found
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center justify-between border-t border-gray-900 p-3">
+            <div className="flex items-center gap-2 text-gray-400">
+              <p className="text">∞ tracks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="flex w-full flex-col items-center gap-4 rounded bg-gray-800 p-2 md:flex-row">
+    <div className="flex w-full items-end overflow-hidden rounded bg-gray-800">
       <SpotifyImage
         image={playlist?.images[0]}
-        className="aspect-square w-full shrink-0 rounded bg-gray-900 md:w-24"
+        className="aspect-square w-28 shrink-0 bg-gray-950"
       />
-      <div className="flex w-full flex-grow flex-col overflow-hidden px-2 pb-4 md:p-0">
-        <p className="mb-1 text-sm font-medium text-gray-500">
-          {playlist?.tracks.total ?? 0} tracks
-        </p>
-        {playlist?.name ? (
-          <p className="mb-2 w-full max-w-96 truncate text-lg font-bold">
-            {playlist.name}
-          </p>
-        ) : (
-          <p className="text-lg text-gray-500">No Playlist</p>
-        )}
-        <div className="flex justify-between">
-          {!link ? null : (
-            <Link
-              to={link.url}
-              className="mb-2 text-sm font-semibold text-primary-600 underline underline-offset-4"
-            >
-              {link.label}
+      <div className="flex min-w-0 grow flex-col self-stretch">
+        <div className="flex grow items-center p-3">
+          <p className="label truncate font-semibold">{playlist.name}</p>
+        </div>
+        <div className="flex shrink-0 items-center justify-between border-t border-gray-900 p-3">
+          {!hasVoteLink ? null : (
+            <Link to={`/vote/${playlist.id}`} className="link">
+              Go Vote
             </Link>
           )}
+          {!hasResultsLink ? null : (
+            <Link to={`/results/${playlist.id}`} className="link">
+              See Results
+            </Link>
+          )}
+          <div className="flex items-center gap-2 text-gray-400">
+            <p className="text">{playlist?.tracks.total ?? 0} tracks</p>
+            <span>•</span>
+            <Link to={playlist.external_urls.spotify}>
+              <img
+                src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
+                className="size-4"
+                alt="Spotify Logo"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
