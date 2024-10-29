@@ -22,7 +22,16 @@ export function meta() {
 }
 
 export function links() {
-  return [{ rel: "stylesheet", href: "https://rsms.me/inter/inter.css" }];
+  return [
+    {
+      rel: "preconnect",
+      href: "https://fonts.googleapis.com",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap",
+    },
+  ];
 }
 
 export async function loader({ context }: LoaderFunctionArgs) {

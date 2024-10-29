@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+import forms from "@tailwindcss/forms";
 import colors from "tailwindcss/colors";
 
 export default {
@@ -6,13 +8,26 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter var", "Arial", "sans-serif"],
+        sans: ["PT Root UI", "Arial", "sans-serif"],
       },
       colors: {
-        gray: colors.stone,
+        gray: colors.neutral,
         primary: colors.amber,
       },
     },
   },
-  plugins: [],
+  plugins: [
+    forms,
+    plugin(({ matchVariant }) => {
+      matchVariant("ui", (value) => {
+        return `&[data-ui~="${value}"]`;
+      });
+      matchVariant("group-ui", (value) => {
+        return `:merge(.group)[data-ui~="${value}"] &`;
+      });
+      matchVariant("peer-ui", (value) => {
+        return `:merge(.peer)[data-ui~="${value}"] &`;
+      });
+    }),
+  ],
 } satisfies Config;
