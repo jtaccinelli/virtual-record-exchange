@@ -11,16 +11,16 @@ type Props = {
 export function CardPlaylist({ playlist, hasVoteLink, hasResultsLink }: Props) {
   if (!playlist)
     return (
-      <div className="flex w-full items-end overflow-hidden rounded bg-gray-800">
-        <div className="aspect-square w-28 shrink-0 bg-gray-700" />
+      <div className="flex w-full items-end overflow-hidden rounded border border-gray-800">
+        <div className="aspect-square w-28 shrink-0 border-r border-gray-800" />
         <div className="flex min-w-0 grow flex-col self-stretch">
           <div className="flex grow items-center p-3">
-            <p className="label truncate font-semibold text-gray-400">
-              No Playlist Found
+            <p className="label truncate font-semibold text-gray-600">
+              None found
             </p>
           </div>
-          <div className="flex shrink-0 items-center justify-between border-t border-gray-900 p-3">
-            <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex shrink-0 items-center justify-between border-t border-gray-800 p-3">
+            <div className="flex items-center gap-2 text-gray-600">
               <p className="text">∞ tracks</p>
             </div>
           </div>
