@@ -4,16 +4,17 @@ import { DialogConfirm } from "./dialog-confirm";
 
 type Props = {
   playlist: SpotifyApi.PlaylistObjectFull;
+  className: string;
 };
 
-export function DialogDeleteForm({ playlist }: Props) {
+export function DialogDeleteForm({ playlist, className }: Props) {
   return (
     <DialogConfirm
       label="Delete Form"
       emoji="🤔"
       heading="Are you sure?"
       subheading="This can't be undone!"
-      className="link text-primary-600"
+      className={className}
     >
       <Form action="/api/config/delete" method="post">
         <input type="hidden" name="playlist-id" value={playlist.id} />

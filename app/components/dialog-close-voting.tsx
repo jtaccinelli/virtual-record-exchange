@@ -4,16 +4,17 @@ import { DialogConfirm } from "./dialog-confirm";
 
 type Props = {
   playlist: SpotifyApi.PlaylistObjectFull;
+  className: string;
 };
 
-export function DialogCloseVoting({ playlist }: Props) {
+export function DialogCloseVoting({ playlist, className }: Props) {
   return (
     <DialogConfirm
       label="Close Voting"
       emoji="🤔"
       heading="Are you sure?"
       subheading="Submissions will be stopped."
-      className="link text-primary-600"
+      className={className}
     >
       <Form action="/api/config/close" method="post">
         <input type="hidden" name="playlist-id" value={playlist.id} />

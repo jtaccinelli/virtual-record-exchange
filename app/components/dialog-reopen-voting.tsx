@@ -4,16 +4,17 @@ import { DialogConfirm } from "./dialog-confirm";
 
 type Props = {
   playlist: SpotifyApi.PlaylistObjectFull;
+  className: string;
 };
 
-export function DialogReopenVoting({ playlist }: Props) {
+export function DialogReopenVoting({ playlist, className }: Props) {
   return (
     <DialogConfirm
       label="Reopen Voting"
       emoji="🤔"
       heading="Are you sure?"
       subheading="Submissions will be re-enabled."
-      className="link text-primary-600"
+      className={className}
     >
       <Form action="/api/config/open" method="post">
         <input type="hidden" name="playlist-id" value={playlist.id} />
