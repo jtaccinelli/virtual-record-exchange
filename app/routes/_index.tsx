@@ -1,22 +1,11 @@
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { useLoaderData } from "@remix-run/react";
+import { eq, like, or } from "drizzle-orm";
+
 import { HeaderHome } from "@app/components/header-list";
 import { ListPlaylists } from "@app/components/list-playlists";
 
-import {
-  LoaderFunctionArgs,
-  MetaFunction,
-  redirect,
-} from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
 import { config } from "config";
-
-import { eq, like, or } from "drizzle-orm";
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
 
 export async function loader({ context }: LoaderFunctionArgs) {
   if (!context?.user?.id) return {};
@@ -31,6 +20,11 @@ export async function loader({ context }: LoaderFunctionArgs) {
       ),
     );
 
+  const votes = await context.db.orm
+    .select()
+    .from(context.db.votes)
+    .where(eq(context.db.votes.voter_id, context.user.id));
+
   const playlists = await Promise.all(
     configs.map((item) => {
       type Response = SpotifyApi.PlaylistObjectFull;
@@ -40,33 +34,30 @@ export async function loader({ context }: LoaderFunctionArgs) {
     }),
   );
 
-  const openIds = configs
-    .filter((item) => !!item)
-    .filter((item) => {
-      if (!context.user?.id) return true;
-      const isContributor = item.contributor_ids.includes(context.user.id);
-      return isContributor && !!item.enable_voting;
-    })
-    .map((item) => item.playlist_id);
+  const enrichedPlaylists = playlists.reduce((array, playlist) => {
+    if (!playlist) return array;
 
-  const closedIds = configs
-    .filter((item) => !!item)
-    .filter((item) => {
-      if (!context.user?.id) return true;
-      const isContributor = item.contributor_ids.includes(context.user.id);
-      return isContributor && !item.enable_voting;
-    })
-    .map((item) => item.playlist_id);
+    const config = configs.find((config) => config.playlist_id === playlist.id);
+    const vote = votes.find((vote) => vote.playlist_id === playlist.id);
+    if (!config) return array;
+
+    array.push({
+      data: playlist,
+      isOpen: !!config.enable_voting,
+      hasVoted: !!vote,
+      hasCreated: config.created_by === context?.user?.id,
+    });
+
+    return array;
+  }, [] as EnrichedPlaylist[]);
 
   return {
-    playlists: playlists.filter((playlist) => !!playlist),
-    openIds,
-    closedIds,
+    playlists: enrichedPlaylists,
   };
 }
 
 export default function Index() {
-  const { playlists, openIds, closedIds } = useLoaderData<typeof loader>();
+  const { playlists } = useLoaderData<typeof loader>();
 
   if (typeof playlists === "undefined") return null;
 
@@ -75,15 +66,13 @@ export default function Index() {
       <HeaderHome />
       <ListPlaylists
         title="Open Voting Forms"
+        filter={(playlist) => playlist.isOpen}
         playlists={playlists}
-        ids={openIds}
-        hasVoteLink
       />
       <ListPlaylists
         title="Closed Voting Forms"
         playlists={playlists}
-        ids={closedIds}
-        hasResultsLink
+        filter={(playlist) => !playlist.isOpen}
       />
     </div>
   );

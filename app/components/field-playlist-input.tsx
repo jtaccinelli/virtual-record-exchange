@@ -3,7 +3,8 @@ import { Link, useFetcher } from "@remix-run/react";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 import { loader } from "@app/routes/api.playlist.fetch";
-import { CardPlaylist } from "./card-playlist";
+import { CardPlaylist, CardPlaylistSkeleton } from "./card-playlist";
+import { Alert } from "./alert";
 
 const URL_STARTER = "https://open.spotify.com/playlist/";
 
@@ -71,15 +72,17 @@ export function FieldPlaylistInput() {
         onChange={handleChange}
         className="rounded border-transparent bg-gray-700 text-white placeholder:text-gray-500"
       />
-      <CardPlaylist playlist={playlist} />
+      {!playlist ? (
+        <CardPlaylistSkeleton />
+      ) : (
+        <CardPlaylist playlist={playlist} />
+      )}
       {!fetcher.data?.hasConfig ? null : (
-        <div className="flex items-center justify-between gap-3 rounded bg-white px-4 py-3 text-black">
-          <InformationCircleIcon className="h-5 w-5" />
-          <p className="text grow">This playlist already has a form created.</p>
-          <Link to={`/vote/${playlistId}`} className="link">
-            Go There
-          </Link>
-        </div>
+        <Alert
+          message="This playlist already has a form created."
+          cta="Go Vote"
+          href={`/vote/${playlistId}`}
+        />
       )}
     </div>
   );
