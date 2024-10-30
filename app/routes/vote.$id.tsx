@@ -9,6 +9,7 @@ import { DialogRevoteForm } from "@app/components/dialog-revote-form";
 import { DialogCantVote } from "@app/components/dialog-cant-vote";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { DialogCloseVoting } from "@app/components/dialog-close-voting";
+import { ActionBar } from "@app/components/action-bar";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -107,13 +108,13 @@ export default function Page() {
         votes={votes}
       />
       {!isFormCreator ? null : (
-        <div className="flex flex-col justify-between gap-2 bg-gray-300 p-6 text-gray-950 md:flex-row md:px-6 md:py-4">
-          <p className="label">You created this form.</p>
-          <div className="flex gap-4">
-            <DialogCloseVoting playlist={playlist} />
-            <DialogDeleteForm playlist={playlist} />
-          </div>
-        </div>
+        <ActionBar
+          message="You created this form."
+          actions={[
+            <DialogCloseVoting playlist={playlist} className="link" />,
+            <DialogDeleteForm playlist={playlist} className="link" />,
+          ]}
+        />
       )}
 
       <FormVote

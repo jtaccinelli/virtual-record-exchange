@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { HeaderResults } from "@app/components/header-results";
 import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
+import { ActionBar } from "@app/components/action-bar";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -55,13 +56,13 @@ export default function Page() {
     <div className="flex flex-col gap-3">
       <HeaderResults playlist={playlist} />
       {!isFormCreator ? null : (
-        <div className="mx-4 mt-2 flex flex-col justify-between gap-2 rounded bg-primary-950 p-4 md:flex-row">
-          <p>You created this form.</p>
-          <div className="flex gap-4">
-            <DialogReopenVoting playlist={playlist} />
-            <DialogDeleteForm playlist={playlist} />
-          </div>
-        </div>
+        <ActionBar
+          message="You created this form."
+          actions={[
+            <DialogReopenVoting playlist={playlist} className="link" />,
+            <DialogDeleteForm playlist={playlist} className="link" />,
+          ]}
+        />
       )}
     </div>
   );
