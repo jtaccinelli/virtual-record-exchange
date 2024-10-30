@@ -17,11 +17,11 @@
   /* Buttons */
 
   .btn {
-    @apply flex h-11 items-center gap-4 rounded-full px-6 font-medium transition-colors hover:cursor-pointer;
+    @apply flex h-11 items-center gap-4 whitespace-nowrap rounded-full px-6 font-medium transition-colors hover:cursor-pointer;
   }
 
   .btn-primary {
-    @apply bg-gray-400 text-black hover:bg-gray-700 hover:text-white;
+    @apply bg-gray-200 text-black hover:bg-gray-700 hover:text-white;
   }
 
   .btn-secondary {
@@ -46,6 +46,10 @@
 
   .text {
     @apply text-sm font-normal;
+  }
+
+  .badge {
+    @apply text-xs font-medium;
   }
 
   .link {

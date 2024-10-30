@@ -1,6 +1,5 @@
-import { Field, Label, Textarea } from "@headlessui/react";
-import clsx from "clsx";
 import { useState } from "react";
+import clsx from "clsx";
 
 type Props<Value> = {
   name: string;
@@ -16,32 +15,31 @@ export function FieldTabs<Value extends string | number>({
   defaultValue,
 }: Props<Value>) {
   const [selectedValue, setSelectedValue] = useState<Value>(defaultValue);
-
   const handleSelectValue = (value: Value) => () => {
     setSelectedValue(value);
   };
 
   return (
-    <Field className="flex flex-col">
-      <Label className="mb-4 font-medium">{label}</Label>
+    <div className="flex flex-col gap-4 p-8 px-6">
       <input type="hidden" name={name} value={selectedValue} />
-      <div className="flex gap-2 rounded bg-gray-950 p-2">
+      <label className="label">{label}</label>
+      <div className="flex gap-2 rounded bg-gray-700 p-1">
         {values.map((value) => (
           <button
-            type="button"
             key={value}
+            type="button"
             onClick={handleSelectValue(value)}
             className={clsx(
-              "h-11 flex-grow rounded text-lg font-semibold transition-all",
+              "label h-11 grow rounded transition-all",
               value === selectedValue
-                ? "bg-primary-950 text-primary-500"
-                : "border-transparent text-gray-500 hover:bg-gray-900 hover:text-white",
+                ? "bg-gray-900 text-white"
+                : "border-transparent text-gray-500 hover:bg-gray-800",
             )}
           >
             {value}
           </button>
         ))}
       </div>
-    </Field>
+    </div>
   );
 }

@@ -59,7 +59,7 @@ export function FieldTracks({ tracks, max = 3 }: Props) {
   };
 
   return (
-    <Field className="flex flex-col">
+    <Field className="flex flex-col gap-4 px-6 py-8">
       <div className="mb-1 flex w-full justify-between">
         <Label className="font-medium">
           What were the best tracks submitted this week?

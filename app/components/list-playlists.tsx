@@ -16,8 +16,6 @@ export function ListPlaylists({ playlists, filter, title }: Props) {
     return playlists.filter(filter);
   }, [filter, playlists]);
 
-  console.log(playlists);
-
   return (
     <div className="flex flex-col pb-10">
       <p className="label sticky top-0 border-t border-gray-800 bg-gray-900 p-6">

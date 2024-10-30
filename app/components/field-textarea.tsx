@@ -1,5 +1,3 @@
-import { Field, Label, Textarea } from "@headlessui/react";
-
 type Props = {
   name: string;
   label: string;
@@ -7,9 +5,12 @@ type Props = {
 
 export function FieldTextarea({ name, label }: Props) {
   return (
-    <Field className="flex flex-col">
-      <Label className="mb-4 font-medium">{label}</Label>
-      <Textarea name={name} className="field-input" />
-    </Field>
+    <div className="flex flex-col gap-4 px-6 py-8">
+      <label className="font-medium">{label}</label>
+      <textarea
+        name={name}
+        className="rounded border-transparent bg-gray-700 text-white placeholder:text-gray-500"
+      />
+    </div>
   );
 }

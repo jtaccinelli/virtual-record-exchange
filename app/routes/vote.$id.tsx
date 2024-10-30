@@ -100,15 +100,15 @@ export default function Page() {
   } = data;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col">
       <HeaderVote
         playlist={playlist}
         contributors={contributors}
         votes={votes}
       />
       {!isFormCreator ? null : (
-        <div className="mx-4 mt-2 flex flex-col justify-between gap-2 rounded bg-primary-950 p-4 md:flex-row">
-          <p>You created this form.</p>
+        <div className="flex flex-col justify-between gap-2 bg-gray-300 p-6 text-gray-950 md:flex-row md:px-6 md:py-4">
+          <p className="label">You created this form.</p>
           <div className="flex gap-4">
             <DialogCloseVoting playlist={playlist} />
             <DialogDeleteForm playlist={playlist} />

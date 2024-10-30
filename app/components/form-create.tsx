@@ -5,7 +5,11 @@ import { FieldPlaylistInput } from "./field-playlist-input";
 
 export function FormCreate() {
   return (
-    <Form className="flex flex-col" action="/api/config/create" method="post">
+    <Form
+      className="relative flex flex-col divide-y divide-gray-950"
+      action="/api/config/create"
+      method="post"
+    >
       <FieldPlaylistInput />
       <FieldTabs
         name="track-vote-count"
@@ -19,9 +23,11 @@ export function FormCreate() {
         defaultValue={1}
         values={[1, 2, 3, 4, 5]}
       />
-      <button type="submit" className="btn btn-primary self-start">
-        Create Voting Form
-      </button>
+      <div className="sticky bottom-0 bg-gray-900 px-6 py-4">
+        <button type="submit" className="btn btn-primary self-start">
+          Create Voting Form
+        </button>
+      </div>
     </Form>
   );
 }
