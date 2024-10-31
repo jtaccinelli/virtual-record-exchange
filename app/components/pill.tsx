@@ -9,7 +9,7 @@ export function Pill({ label, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-1 rounded border-2 border-transparent bg-primary-950 px-3 py-1 text-sm font-medium text-primary-600"
+      className="text flex items-center gap-1 whitespace-nowrap rounded bg-white px-3 py-1 text-black"
     >
       <span>{label}</span>
       <XMarkIcon className="h-4 w-4" />

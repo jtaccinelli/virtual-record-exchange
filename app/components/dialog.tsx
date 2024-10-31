@@ -25,6 +25,7 @@ export function Dialog({
       className="group fixed inset-0 z-40 transition-opacity ui-[closed]:pointer-events-none ui-[closed]:opacity-0"
     >
       <button
+        type="button"
         className="absolute inset-0 z-0 bg-gray-950/80"
         onClick={onClose}
       />

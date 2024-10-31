@@ -1,146 +1,140 @@
-import { ChangeEvent, useMemo, useRef, useState } from "react";
-
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxOptions,
-  ComboboxOption,
-  Field,
-  Label,
-  Description,
-} from "@headlessui/react";
+import { useCallback, useMemo, useState } from "react";
+import { Link } from "@remix-run/react";
 
 import { SpotifyImage } from "./spotify-image";
 import { Pill } from "./pill";
+import { DialogSearch } from "./dialog-search";
+
+type User = SpotifyApi.UserProfileResponse;
 
 type Props = {
-  users: SpotifyApi.UserProfileResponse[];
+  users: User[];
   max?: number;
 };
 
 export function FieldUsers({ users, max = 1 }: Props) {
-  const [query, setQuery] = useState<string>();
-  const [selectedUsers, setSelectedUsers] = useState<typeof users>([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
   const isAtSelectedMax = useMemo(() => {
     return selectedUsers.length >= max;
   }, [selectedUsers, max]);
 
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      const isSelected = selectedUsers.some((selectedUser) => {
-        return selectedUser.id === user.id;
-      });
+  const handleFilter = (item: User, query: string) => {
+    if (!query) return true;
+    const term = query.toLowerCase();
+    const displayName = item?.display_name ?? item.id;
 
-      if (isSelected) return false;
-      if (!query) return true;
+    const hasNameMatch = displayName.toLowerCase().includes(term);
+    const hasIdMatch = item.id.toLowerCase().includes(term);
 
-      const formattedQuery = query.toLowerCase();
-      const displayName = user?.display_name ?? user.id;
+    return hasNameMatch || hasIdMatch;
+  };
 
-      const hasNameMatch = displayName.toLowerCase().includes(formattedQuery);
-      const hasIdMatch = user.id.toLowerCase().includes(formattedQuery);
-
-      return hasNameMatch || hasIdMatch;
+  const handleSelectUser = (item: User) => () => {
+    setSelectedUsers((users) => {
+      return [...users, item];
     });
-  }, [selectedUsers, query]);
+  };
 
-  const handleClearUser =
-    (targetUser: SpotifyApi.UserProfileResponse) => () => {
-      setSelectedUsers((users) => {
-        return users.filter((user) => {
-          return user.id !== targetUser.id;
-        });
+  const handleClearUser = (item: User) => () => {
+    setSelectedUsers((users) => {
+      return users.filter((user) => {
+        return user.id !== item.id;
       });
-    };
+    });
+  };
 
   const handleClearAll = () => {
     setSelectedUsers([]);
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+  const handleToggleTrack = (item: User) => () => {
+    const isSelected = selectedUsers.some((user) => item.id === user.id);
+    if (isSelected) handleClearUser(item)();
+    else handleSelectUser(item)();
   };
 
-  return (
-    <Field className="flex flex-col">
-      <div className="mb-1 flex w-full justify-between">
-        <Label className="font-medium">
-          Who submitted the best tracks this week?
-        </Label>
-        {selectedUsers.length === 0 ? null : (
-          <button
-            onClick={handleClearAll}
-            className="text-sm font-medium text-primary-600 underline underline-offset-2"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-      <Description className="mb-4 text-sm text-gray-500">
-        Select a maximum of {max}
-      </Description>
-
-      <div className="mb-4 flex w-full flex-row flex-wrap gap-2">
-        {selectedUsers.length === 0 ? (
-          <div className="rounded border-2 border-dashed border-gray-700 px-3 py-1 text-sm font-semibold text-gray-700">
-            No User Selected
-          </div>
-        ) : (
-          selectedUsers.map((user) => (
-            <Pill
-              key={user.id}
-              onClick={handleClearUser(user)}
-              label={user.display_name ?? user.id}
-            />
-          ))
-        )}
-      </div>
-
-      <Combobox
-        multiple
-        immediate
-        value={selectedUsers}
-        onChange={setSelectedUsers}
-        name="users"
-      >
-        <input
-          type="hidden"
-          name="user-ids"
-          value={selectedUsers.map((user) => user.id).join(",")}
-        />
-        <ComboboxInput
-          className="field-input"
-          onChange={handleInputChange}
-          disabled={isAtSelectedMax}
-          placeholder={
-            isAtSelectedMax
-              ? "Max users have been selected"
-              : "Search for users..."
-          }
-        />
-        <ComboboxOptions
-          anchor="bottom"
-          className="max-h-16 w-[--input-width] gap-2 overflow-y-scroll rounded bg-gray-950/80 p-2 backdrop-blur-lg [--anchor-gap:16px] empty:hidden aria-disabled:hidden"
-          aria-disabled={isAtSelectedMax}
+  const renderUser = useCallback(
+    (item: User) => {
+      const isSelected = selectedUsers.some((user) => item.id === user.id);
+      return (
+        <button
+          type="button"
+          data-ui={isSelected && "selected"}
+          className="group flex items-center overflow-hidden rounded bg-gray-800 transition-all hover:cursor-pointer hover:bg-gray-700 ui-[selected]:bg-white"
+          onClick={handleToggleTrack(item)}
         >
-          {filteredUsers.map((user) => {
-            return (
-              <ComboboxOption
+          <SpotifyImage
+            image={item.images?.[0]}
+            className="size-12 bg-gray-950"
+          />
+          <div className="flex min-w-0 grow flex-col px-3 py-2 text-left">
+            <p className="label group-ui-[selected]:text-black">
+              {item?.display_name ?? item.id}
+            </p>
+          </div>
+          <Link
+            to={item.external_urls.spotify}
+            target="_blank"
+            className="flex size-12 shrink-0 items-center justify-center"
+          >
+            <img
+              src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
+              className="size-4"
+              alt="Spotify Logo"
+            />
+          </Link>
+        </button>
+      );
+    },
+    [selectedUsers],
+  );
+
+  return (
+    <div className="flex flex-col gap-4 px-6 py-8">
+      <input
+        type="hidden"
+        name="user-ids"
+        value={selectedUsers.map((user) => user.id).join(",")}
+      />
+      <label className="label -mb-4 block">
+        Who submitted the best tracks this week?
+      </label>
+      <div className="flex justify-between">
+        <p className="text text-gray-400">Select a maximum of {max}</p>
+        <button
+          type="button"
+          onClick={handleClearAll}
+          className="link disabled:hidden"
+          disabled={!selectedUsers.length}
+        >
+          Clear
+        </button>
+      </div>
+      <div className="flex gap-2">
+        <DialogSearch
+          cta="Search"
+          label="Search Users"
+          placeholder="Search for users by name..."
+          items={users}
+          filter={handleFilter}
+          renderItem={renderUser}
+          disabled={isAtSelectedMax}
+        />
+        <div className="flex grow items-center gap-2 overflow-x-scroll rounded bg-gray-700 px-2">
+          {selectedUsers.length === 0 ? (
+            <p className="text ml-2 text-gray-400">No Users Selected</p>
+          ) : (
+            selectedUsers.map((user) => (
+              <Pill
                 key={user.id}
-                value={user}
-                className="flex items-center gap-2 rounded p-1 hover:cursor-pointer hover:bg-gray-900"
-              >
-                <SpotifyImage
-                  image={user.images?.[0]}
-                  className="size-8 rounded bg-gray-950"
-                />
-                {user.display_name}
-              </ComboboxOption>
-            );
-          })}
-        </ComboboxOptions>
-      </Combobox>
-    </Field>
+                onClick={handleClearUser(user)}
+                label={user?.display_name ?? user.id}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
