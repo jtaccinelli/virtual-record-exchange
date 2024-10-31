@@ -1,12 +1,19 @@
+import { ArrowLeftIcon } from "@heroicons/react/16/solid";
+import { Link } from "@remix-run/react";
+
 type Props = {
   playlist: SpotifyApi.PlaylistObjectFull;
 };
 
 export function HeaderResults({ playlist }: Props) {
   return (
-    <div className="flex flex-col border-b-2 border-gray-800 p-6 pt-20">
-      <p className="mb-1 text-sm text-gray-500">Playlist Results</p>
-      <h3 className="mb-4 text-xl font-bold">{playlist.name}</h3>
+    <div className="flex w-full flex-col gap-6 p-6 pt-10">
+      <Link to="/" className="flex items-center gap-2">
+        <ArrowLeftIcon className="size-4" />
+        <span className="link">Back to home page</span>
+      </Link>
+      <p className="text -mb-6 text-gray-400">Playlist Results</p>
+      <h3 className="heading">{playlist.name}</h3>
     </div>
   );
 }

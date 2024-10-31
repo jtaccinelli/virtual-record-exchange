@@ -7,6 +7,7 @@ import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { HeaderResults } from "@app/components/header-results";
 import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
 import { ActionBar } from "@app/components/action-bar";
+import { ResultsList } from "@app/components/results-list";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -42,7 +43,6 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 
   return {
     playlist,
-    config: form,
     votes,
     previousVote,
     isFormCreator,
@@ -50,7 +50,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 }
 
 export default function Page() {
-  const { playlist, isFormCreator } = useLoaderData<typeof loader>();
+  const { playlist, votes, isFormCreator } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col gap-3">
@@ -70,6 +70,18 @@ export default function Page() {
           ]}
         />
       )}
+      <div className="flex flex-col divide-y divide-gray-800">
+        <ResultsList
+          label="Honourable Mentions"
+          votes={votes}
+          map={(vote) => vote.honourable_mentions}
+        />
+        <ResultsList
+          label="Shame Votes"
+          votes={votes}
+          map={(vote) => vote.shame_votes}
+        />
+      </div>
     </div>
   );
 }
