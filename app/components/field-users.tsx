@@ -100,30 +100,13 @@ export function FieldUsers({ users, max = 1 }: Props) {
       <label className="label -mb-4 block">
         Who submitted the best tracks this week?
       </label>
-      <div className="flex justify-between">
-        <p className="text text-gray-400">Select a maximum of {max}</p>
-        <button
-          type="button"
-          onClick={handleClearAll}
-          className="link disabled:hidden"
-          disabled={!selectedUsers.length}
-        >
-          Clear
-        </button>
-      </div>
-      <div className="flex gap-2">
-        <DialogSearch
-          cta="Search"
-          label="Search Users"
-          placeholder="Search for users by name..."
-          items={users}
-          filter={handleFilter}
-          renderItem={renderUser}
-          disabled={isAtSelectedMax}
-        />
-        <div className="flex grow items-center gap-2 overflow-x-scroll rounded bg-gray-700 px-2">
+      <p className="text text-gray-400">Select a maximum of {max}</p>
+      <div className="flex items-end justify-between">
+        <div className="flex grow flex-wrap items-center gap-2">
           {selectedUsers.length === 0 ? (
-            <p className="text ml-2 text-gray-400">No Users Selected</p>
+            <p className="text flex items-center gap-1 whitespace-nowrap rounded border border-gray-600 px-3 py-1 text-gray-600">
+              No Users Selected
+            </p>
           ) : (
             selectedUsers.map((user) => (
               <Pill
@@ -134,7 +117,24 @@ export function FieldUsers({ users, max = 1 }: Props) {
             ))
           )}
         </div>
+        <button
+          type="button"
+          onClick={handleClearAll}
+          className="link disabled:hidden"
+          disabled={!selectedUsers.length}
+        >
+          Clear
+        </button>
       </div>
+      <DialogSearch
+        cta="Add your users..."
+        label="Search Users"
+        placeholder="Search for users by name..."
+        items={users}
+        filter={handleFilter}
+        renderItem={renderUser}
+        disabled={isAtSelectedMax}
+      />
     </div>
   );
 }

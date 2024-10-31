@@ -55,7 +55,7 @@ export function DialogSearch<Item>({
       <button
         type="button"
         onClick={handleOpen}
-        className="btn btn-primary"
+        className="field-input rounded border-transparent bg-gray-700 text-start text-gray-500"
         disabled={disabled}
       >
         {cta}

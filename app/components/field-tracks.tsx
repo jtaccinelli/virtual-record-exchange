@@ -105,30 +105,13 @@ export function FieldTracks({ tracks, max = 3 }: Props) {
       <label className="label -mb-4 block">
         What were the best tracks submitted this week?
       </label>
-      <div className="flex justify-between">
-        <p className="text text-gray-400">Select a maximum of {max}</p>
-        <button
-          type="button"
-          onClick={handleClearAll}
-          className="link disabled:hidden"
-          disabled={!selectedTracks.length}
-        >
-          Clear
-        </button>
-      </div>
-      <div className="flex gap-2">
-        <DialogSearch
-          cta="Search"
-          label="Search Tracks"
-          placeholder="Search for tracks by name..."
-          items={tracks}
-          filter={handleFilter}
-          renderItem={renderTrack}
-          disabled={isAtSelectedMax}
-        />
-        <div className="flex grow items-center gap-2 overflow-x-scroll rounded bg-gray-700 px-2">
+      <p className="text text-gray-400">Select a maximum of {max}</p>
+      <div className="flex items-end justify-between">
+        <div className="flex grow flex-wrap items-center gap-2">
           {selectedTracks.length === 0 ? (
-            <p className="text ml-2 text-gray-400">No Tracks Selected</p>
+            <p className="text flex items-center gap-1 whitespace-nowrap rounded border border-gray-600 px-3 py-1 text-gray-600">
+              No Tracks Selected
+            </p>
           ) : (
             selectedTracks.map((track) => (
               <Pill
@@ -139,7 +122,24 @@ export function FieldTracks({ tracks, max = 3 }: Props) {
             ))
           )}
         </div>
+        <button
+          type="button"
+          onClick={handleClearAll}
+          className="link disabled:hidden"
+          disabled={!selectedTracks.length}
+        >
+          Clear
+        </button>
       </div>
+      <DialogSearch
+        cta="Add your tracks..."
+        label="Search Tracks"
+        placeholder="Search for tracks by name..."
+        items={tracks}
+        filter={handleFilter}
+        renderItem={renderTrack}
+        disabled={isAtSelectedMax}
+      />
     </div>
   );
 }
