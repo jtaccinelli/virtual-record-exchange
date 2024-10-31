@@ -59,8 +59,14 @@ export default function Page() {
         <ActionBar
           message="You created this form."
           actions={[
-            <DialogReopenVoting playlist={playlist} className="link" />,
-            <DialogDeleteForm playlist={playlist} className="link" />,
+            <DialogReopenVoting
+              playlist={playlist}
+              className="text whitespace-nowrap px-3 py-2 text-left"
+            />,
+            <DialogDeleteForm
+              playlist={playlist}
+              className="text whitespace-nowrap px-3 py-2 text-left"
+            />,
           ]}
         />
       )}
