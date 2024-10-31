@@ -26,7 +26,7 @@ export function CardPlaylist({ playlist, href, cta, tags, actions }: Props) {
         </div>
         <SpotifyImage
           image={playlist?.images[0]}
-          className="aspect-square w-20 shrink-0 bg-gray-950"
+          className="aspect-square w-20 shrink-0 bg-gray-950 object-cover"
         />
       </div>
       <div className="flex items-center justify-between border-t border-gray-900 p-3 text-gray-400">
