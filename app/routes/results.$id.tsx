@@ -14,6 +14,13 @@ import { ResultsList } from "@app/components/results-list";
 export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!params.id || !context.user) throw redirect("/");
 
+  type Response = SpotifyApi.PlaylistObjectFull;
+  const playlist = await context.spotify.fetch<Response>(
+    config.spotify.endpoints.playlists + `/${params.id}`,
+  );
+
+  if (!playlist) throw redirect("/");
+
   const [form] = await context.db.orm
     .select()
     .from(context.db.configs)
@@ -23,28 +30,38 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!form) throw redirect(`/`);
   if (form.enable_voting) throw redirect(`/vote/${params.id}`);
 
-  type Response = SpotifyApi.PlaylistObjectFull;
-  const playlist = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.playlists + `/${params.id}`,
-  );
-
-  if (!playlist) throw redirect("/");
+  const isFormCreator = form.created_by === context.user.id;
 
   const votes = await context.db.orm
     .select()
     .from(context.db.votes)
     .where(eq(context.db.votes.playlist_id, params.id));
 
-  const previousVote = votes.find((vote) => {
-    return vote.voter_id === context?.user?.id;
+  const tracks = playlist.tracks.items.map((item) => {
+    return item.track;
   });
 
-  const isFormCreator = form.created_by === context.user.id;
+  const [...userIds] = new Set(
+    votes.reduce((array, item) => {
+      if (!item.contributor_ids) return array;
+      return [...array, ...item.contributor_ids.split(",")];
+    }, [] as string[]),
+  );
+
+  const users = await Promise.all(
+    userIds.map((id) => {
+      type Response = SpotifyApi.UserProfileResponse;
+      return context.spotify.fetch<Response>(
+        config.spotify.endpoints.users + `/${id}`,
+      );
+    }),
+  );
 
   return {
     playlist,
     votes,
-    previousVote,
+    users,
+    tracks,
     isFormCreator,
   };
 }
