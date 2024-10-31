@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import { ActionMenu } from "./action-menu";
+
 type Props = {
   message: string;
   actions: ReactNode[];
@@ -7,9 +9,9 @@ type Props = {
 
 export function ActionBar({ message, actions }: Props) {
   return (
-    <div className="flex flex-col justify-between gap-2 bg-gray-300 p-6 text-gray-950 md:flex-row md:px-6 md:py-4">
+    <div className="flex items-center justify-between gap-2 bg-gray-300 px-6 py-4 text-gray-950">
       <p className="label">{message}</p>
-      <div className="flex gap-4">{actions}</div>
+      <ActionMenu items={actions} />
     </div>
   );
 }
