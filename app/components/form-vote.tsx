@@ -25,12 +25,14 @@ export function FormVote({ tracks, users, playlist, config }: Props) {
       {!config.enable_honourable_mentions ? null : (
         <FieldTextarea
           name="honourable-mentions"
+          placeholder="I liked..."
           label="Are there any tracks or contributors worthy of an honourable mention?"
         />
       )}
       {!config.enable_shame_votes ? null : (
         <FieldTextarea
           name="shame-votes"
+          placeholder="I didn't like..."
           label="Are there any tracks or contributors that deserve shame votes?"
         />
       )}
