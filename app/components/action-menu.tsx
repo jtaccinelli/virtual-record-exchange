@@ -8,7 +8,10 @@ type Props = {
 export function ActionMenu({ items }: Props) {
   return (
     <div className="group relative">
-      <button className="-m-3 flex size-11 items-center justify-center">
+      <button
+        className="-m-3 flex size-11 items-center justify-center"
+        tabIndex={0}
+      >
         <EllipsisVerticalIcon className="size-5" />
       </button>
       <div
