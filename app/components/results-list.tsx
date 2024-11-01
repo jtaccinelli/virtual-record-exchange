@@ -21,7 +21,7 @@ export function ResultsList({ label, votes, map }: Props) {
         <p className="text text-gray-400">{items.length} answer(s)</p>
       </div>
 
-      <div className="flex flex-col rounded">
+      <div className="flex flex-col overflow-hidden rounded">
         {!items.length ? (
           <p className="text flex items-center justify-center rounded border border-gray-600 p-4 text-gray-600">
             No submissions

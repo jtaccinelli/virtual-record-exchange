@@ -8,6 +8,14 @@ import { HeaderResults } from "@app/components/header-results";
 import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
 import { ActionBar } from "@app/components/action-bar";
 import { ResultsList } from "@app/components/results-list";
+import { ResultsBar } from "@app/components/results-bar";
+import { useMemo } from "react";
+import {
+  processBestTrackResults,
+  processBestUserResults,
+  processMostTrackVotesResults,
+} from "@app/utils/results";
+import { ResultsPie } from "@app/components/results-pie";
 
 // 6wVtemFdsmYio00dj7cojJ
 
@@ -38,14 +46,14 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     .where(eq(context.db.votes.playlist_id, params.id));
 
   const tracks = playlist.tracks.items.map((item) => {
-    return item.track;
+    if (!item.track) return undefined;
+    return { ...item.track, added_by: item.added_by };
   });
 
   const [...userIds] = new Set(
-    votes.reduce((array, item) => {
-      if (!item.contributor_ids) return array;
-      return [...array, ...item.contributor_ids.split(",")];
-    }, [] as string[]),
+    playlist.tracks.items.map((item) => {
+      return item.added_by.id;
+    }),
   );
 
   const users = await Promise.all(
@@ -60,14 +68,31 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
   return {
     playlist,
     votes,
-    users,
-    tracks,
+    users: users.filter((user) => !!user),
+    tracks: tracks.filter((track) => !!track),
     isFormCreator,
   };
 }
 
 export default function Page() {
-  const { playlist, votes, isFormCreator } = useLoaderData<typeof loader>();
+  const { playlist, votes, tracks, users, isFormCreator } =
+    useLoaderData<typeof loader>();
+
+  const data = useMemo(() => {
+    const bestTrackVote = processBestTrackResults(votes, tracks);
+    const bestUserVote = processBestUserResults(votes, users);
+    const mostTrackVotes = processMostTrackVotesResults(votes, users, tracks);
+
+    return {
+      bestTrackVote,
+      bestUserVote,
+      mostTrackVotes,
+    };
+  }, []);
+
+  const bestContributorData = useMemo(() => {
+    return processBestTrackResults(votes, tracks);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">
@@ -88,6 +113,9 @@ export default function Page() {
         />
       )}
       <div className="flex flex-col divide-y divide-gray-800">
+        <ResultsBar label="Best Track" data={data.bestTrackVote} />
+        <ResultsBar label="Most Track Votes" data={data.mostTrackVotes} />
+        <ResultsPie label="Best Contributor" data={data.bestUserVote} />
         <ResultsList
           label="Honourable Mentions"
           votes={votes}
