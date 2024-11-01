@@ -1,7 +1,15 @@
 import { useMemo } from "react";
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Rectangle,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+} from "recharts";
 
 import { ResultValue } from "@app/utils/results";
+import { ResultsTooltip } from "./results-tooltip";
 
 type Props = {
   label: string;
@@ -26,14 +34,18 @@ export function ResultsBar({ label, data }: Props) {
             No data
           </p>
         ) : (
-          <ResponsiveContainer width="100%" aspect={5 / 2}>
-            <BarChart data={data}>
+          <ResponsiveContainer width="100%" aspect={5 / 4}>
+            <BarChart data={data} style={{ overflow: "visible" }}>
               <Bar
                 dataKey="count"
-                className="overflow-hidden rounded-t fill-gray-500"
+                shape={
+                  <Rectangle className="fill-gray-500" radius={[4, 4, 0, 0]} />
+                }
+                activeBar={
+                  <Rectangle className="fill-white" radius={[4, 4, 0, 0]} />
+                }
               />
-              <XAxis dataKey="name" />
-              <Tooltip />
+              <Tooltip cursor={false} content={<ResultsTooltip />} />
             </BarChart>
           </ResponsiveContainer>
         )}

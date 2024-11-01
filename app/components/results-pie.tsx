@@ -1,7 +1,8 @@
 import { ResultValue } from "@app/utils/results";
 import { votes } from "context/database";
 import { useMemo } from "react";
-import { Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from "recharts";
+import { ResultsTooltip } from "./results-tooltip";
 
 type Vote = typeof votes.$inferSelect;
 
@@ -28,14 +29,15 @@ export function ResultsPie({ label, data }: Props) {
             No data
           </p>
         ) : (
-          <ResponsiveContainer width="100%" aspect={5 / 2}>
+          <ResponsiveContainer width="100%" aspect={1}>
             <PieChart>
               <Pie
                 data={data}
                 dataKey="count"
-                className="overflow-hidden rounded-t fill-white stroke-gray-800"
+                className="overflow-hidden rounded-t fill-gray-400 stroke-gray-800"
+                activeShape={<Sector className="fill-white stroke-gray-800" />}
               />
-              <Tooltip />
+              <Tooltip cursor={false} content={<ResultsTooltip />} />
             </PieChart>
           </ResponsiveContainer>
         )}
