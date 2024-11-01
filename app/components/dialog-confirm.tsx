@@ -31,7 +31,7 @@ export function DialogConfirm({
 
   return (
     <>
-      <button onClick={handleOpen} className={className}>
+      <button onClick={handleOpen} className={className} tabIndex={0}>
         {label}
       </button>
       <DialogBasic
