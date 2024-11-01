@@ -45,10 +45,12 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     .from(context.db.votes)
     .where(eq(context.db.votes.playlist_id, params.id));
 
-  const tracks = playlist.tracks.items.map((item) => {
-    if (!item.track) return undefined;
-    return { ...item.track, added_by: item.added_by };
-  });
+  const tracks = playlist.tracks.items
+    .map((item) => {
+      if (!item.track) return undefined;
+      return { ...item.track, added_by: item.added_by };
+    })
+    .filter((track) => !!track);
 
   const [...userIds] = new Set(
     playlist.tracks.items.map((item) => {
@@ -56,7 +58,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     }),
   );
 
-  const users = await Promise.all(
+  const userResponse = await Promise.all(
     userIds.map((id) => {
       type Response = SpotifyApi.UserProfileResponse;
       return context.spotify.fetch<Response>(
@@ -65,34 +67,29 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     }),
   );
 
+  const users = userResponse.filter((user) => !!user);
+
+  const bestTrackVote = processBestTrackResults(votes, tracks);
+  const bestUserVote = processBestUserResults(votes, users);
+  const mostTrackVotes = processMostTrackVotesResults(votes, users, tracks);
+
   return {
     playlist,
     votes,
-    users: users.filter((user) => !!user),
-    tracks: tracks.filter((track) => !!track),
+    data: {
+      bestTrackVote,
+      bestUserVote,
+      mostTrackVotes,
+    },
     isFormCreator,
   };
 }
 
 export default function Page() {
-  const { playlist, votes, tracks, users, isFormCreator } =
+  const { playlist, votes, data, isFormCreator } =
     useLoaderData<typeof loader>();
 
-  const data = useMemo(() => {
-    const bestTrackVote = processBestTrackResults(votes, tracks);
-    const bestUserVote = processBestUserResults(votes, users);
-    const mostTrackVotes = processMostTrackVotesResults(votes, users, tracks);
-
-    return {
-      bestTrackVote,
-      bestUserVote,
-      mostTrackVotes,
-    };
-  }, []);
-
-  const bestContributorData = useMemo(() => {
-    return processBestTrackResults(votes, tracks);
-  }, []);
+  console.log(votes);
 
   return (
     <div className="flex flex-col gap-3">
