@@ -48,8 +48,10 @@ export function DialogResults({ label, cta, data }: Props) {
             <div className="flex flex-col overflow-hidden rounded">
               {sortedData.map((item) => (
                 <p className="flex justify-between border-b border-gray-900 bg-gray-800 p-3 text-left last:border-b-0">
-                  <span className="label text-white">{item.name}</span>
-                  <span className="text text-gray-400">
+                  <span className="label grow truncate text-white">
+                    {item.name}
+                  </span>
+                  <span className="text whitespace-nowrap text-gray-400">
                     {item.count} {item.count > 1 ? "votes" : "vote"}
                   </span>
                 </p>

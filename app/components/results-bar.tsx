@@ -69,8 +69,10 @@ export function ResultsBar({ label, data }: Props) {
         ) : (
           winners.map((winner) => (
             <p className="flex justify-between border-b border-gray-900 bg-gray-800 p-3 text-left last:border-b-0">
-              <span className="label text-white">{winner.name}</span>
-              <span className="text text-gray-400">
+              <span className="label grow truncate text-white">
+                {winner.name}
+              </span>
+              <span className="text whitespace-nowrap text-gray-400">
                 {winner.count} {winner.count > 1 ? "votes" : "vote"}
               </span>
             </p>
