@@ -45,7 +45,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   };
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export default function App() {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -57,7 +57,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="h-full bg-gray-800 text-white md:p-4 ">
         <main className="mx-auto h-full w-full max-w-screen-sm overflow-y-scroll bg-gray-900 md:rounded-lg">
-          <div className="min-h-full">{children}</div>
+          <div className="min-h-full">
+            <Outlet />
+          </div>
           <Footer />
         </main>
         <DialogSignIn />
@@ -67,8 +69,4 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
