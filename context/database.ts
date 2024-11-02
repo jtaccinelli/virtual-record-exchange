@@ -1,6 +1,8 @@
 import { CloudflareContext } from "@remix-run/cloudflare";
-import { drizzle } from "drizzle-orm/d1";
+
+import { SQL } from "drizzle-orm";
 import { sqliteTable, int, text } from "drizzle-orm/sqlite-core";
+import { drizzle } from "drizzle-orm/d1";
 
 export const votes = sqliteTable("votes", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -23,6 +25,8 @@ export const configs = sqliteTable("configs", {
   enable_voting: int().default(1),
 });
 
+type AllTables = typeof votes | typeof configs;
+
 export class Database {
   static async init(context: CloudflareContext) {
     return new this(context.cloudflare.env.DB);
@@ -36,5 +40,14 @@ export class Database {
     this.orm = drizzle(database);
     this.votes = votes;
     this.configs = configs;
+  }
+
+  select<Table extends AllTables>(
+    table: Table,
+    callbacks: {
+      where: (table: Table) => SQL | undefined;
+    },
+  ) {
+    return this.orm.select().from(table).where(callbacks.where(table));
   }
 }
