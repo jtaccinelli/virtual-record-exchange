@@ -1,35 +1,29 @@
+import { isString } from "@app/utils/data";
 import { ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { and, eq } from "drizzle-orm";
 
 export async function action({ context, request }: ActionFunctionArgs) {
-  if (!context.user) {
-    console.error("User was not signed in");
-    throw redirect("/");
-  }
+  const userId = context?.user?.id;
+  if (!userId) throw redirect("/");
 
   const form = await request.formData();
 
   const playlistId = form.get("playlist-id");
   const voteId = form.get("vote-id");
 
-  if (typeof playlistId !== "string" || typeof voteId !== "string") {
+  const hasValidData = isString(playlistId) && isString(voteId);
+  if (!hasValidData) {
     throw new Error("Data for config creation was sent with incorrect format");
   }
 
-  if (!playlistId) {
-    console.error("No playlist ID provided.");
-    throw redirect("/");
-  }
-
-  await context.db.orm
-    .delete(context.db.votes)
-    .where(
+  await context.db.delete(context.db.votes, {
+    where: (table) =>
       and(
-        eq(context.db.votes.id, parseInt(voteId)),
-        eq(context.db.votes.playlist_id, playlistId),
-        eq(context.db.votes.voter_id, context.user.id),
+        eq(table.id, parseInt(voteId)),
+        eq(table.playlist_id, playlistId),
+        eq(table.voter_id, userId),
       ),
-    );
+  });
 
   throw redirect(`/vote/${playlistId}`);
 }

@@ -1,7 +1,13 @@
 import { CloudflareContext } from "@remix-run/cloudflare";
 
 import { SQL } from "drizzle-orm";
-import { sqliteTable, int, text } from "drizzle-orm/sqlite-core";
+import {
+  sqliteTable,
+  int,
+  text,
+  SQLiteUpdateSetSource,
+  SQLiteInsertValue,
+} from "drizzle-orm/sqlite-core";
 import { drizzle } from "drizzle-orm/d1";
 
 export const votes = sqliteTable("votes", {
@@ -49,5 +55,36 @@ export class Database {
     },
   ) {
     return this.orm.select().from(table).where(callbacks.where(table));
+  }
+
+  delete<Table extends AllTables>(
+    table: Table,
+    callbacks: {
+      where: (table: Table) => SQL | undefined;
+    },
+  ) {
+    return this.orm.delete(table).where(callbacks.where(table));
+  }
+
+  insert<Table extends AllTables>(
+    table: Table,
+    callbacks: {
+      set: () => SQLiteInsertValue<Table>;
+    },
+  ) {
+    return this.orm.insert(table).values(callbacks.set());
+  }
+
+  update<Table extends AllTables>(
+    table: Table,
+    callbacks: {
+      set: () => SQLiteUpdateSetSource<Table>;
+      where: (table: Table) => SQL | undefined;
+    },
+  ) {
+    return this.orm
+      .update(table)
+      .set(callbacks.set())
+      .where(callbacks.where(table));
   }
 }

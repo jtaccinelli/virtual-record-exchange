@@ -7,3 +7,13 @@ export async function fetchPlaylist(context: AppLoadContext, id: string) {
     config.spotify.endpoints.playlists + `/${id}`,
   );
 }
+
+export function isNotFile(
+  value: FormDataEntryValue | null,
+): value is string | null {
+  return typeof value !== "object";
+}
+
+export function isString(value: FormDataEntryValue | null): value is string {
+  return typeof value !== "string";
+}

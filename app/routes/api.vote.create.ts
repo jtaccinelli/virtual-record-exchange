@@ -1,10 +1,9 @@
+import { isNotFile, isString } from "@app/utils/data";
 import { ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 
 export async function action({ context, request }: ActionFunctionArgs) {
-  if (!context.user) {
-    console.error("User was not signed in");
-    throw redirect("/");
-  }
+  const userId = context?.user?.id;
+  if (!userId) throw redirect("/");
 
   const form = await request.formData();
 
@@ -14,26 +13,26 @@ export async function action({ context, request }: ActionFunctionArgs) {
   const honourableMentions = form.get("honourable-mentions");
   const shameVotes = form.get("shame-votes");
 
-  if (
-    typeof playlistId !== "string" ||
-    typeof contributorIds !== "string" ||
-    typeof trackIds !== "string"
-  ) {
+  const hasValidData =
+    isString(playlistId) &&
+    isString(contributorIds) &&
+    isString(trackIds) &&
+    isNotFile(honourableMentions) &&
+    isNotFile(shameVotes);
+
+  if (!hasValidData) {
     throw new Error("Data for config creation was sent with incorrect format");
   }
 
-  if (!playlistId) {
-    console.error("No playlist ID provided:");
-    throw redirect("/");
-  }
-
-  await context.db.orm.insert(context.db.votes).values({
-    playlist_id: playlistId,
-    voter_id: context.user.id,
-    contributor_ids: contributorIds,
-    track_ids: trackIds,
-    honourable_mentions: honourableMentions,
-    shame_votes: shameVotes,
+  await context.db.insert(context.db.votes, {
+    set: () => ({
+      playlist_id: playlistId,
+      voter_id: userId,
+      contributor_ids: contributorIds,
+      track_ids: trackIds,
+      honourable_mentions: honourableMentions,
+      shame_votes: shameVotes,
+    }),
   });
 
   throw redirect("/");
