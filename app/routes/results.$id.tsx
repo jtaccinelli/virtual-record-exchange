@@ -1,77 +1,59 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-
-import { config } from "config";
 import { eq } from "drizzle-orm";
-import { DialogDeleteForm } from "@app/components/dialog-delete-form";
-import { HeaderResults } from "@app/components/header-results";
-import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
-import { ActionBar } from "@app/components/action-bar";
-import { ResultsList } from "@app/components/results-list";
-import { ResultsBar } from "@app/components/results-bar";
-import { useMemo } from "react";
+
 import {
   processBestTrackResults,
   processBestUserResults,
   processMostTrackVotesResults,
 } from "@app/utils/results";
+import { fetchPlaylist, fetchUsersFromPlaylist } from "@app/utils/data";
+
+import { DialogDeleteForm } from "@app/components/dialog-delete-form";
+import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
+
+import { HeaderResults } from "@app/components/header-results";
+import { ActionBar } from "@app/components/action-bar";
+import { ResultsList } from "@app/components/results-list";
+import { ResultsBar } from "@app/components/results-bar";
 import { ResultsPie } from "@app/components/results-pie";
 
 // 6wVtemFdsmYio00dj7cojJ
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
-  if (!params.id || !context.user) throw redirect("/");
+  const userId = context.user?.id;
+  const playlistId = params.id;
 
-  type Response = SpotifyApi.PlaylistObjectFull;
-  const playlist = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.playlists + `/${params.id}`,
-  );
+  if (!playlistId || !userId) throw redirect("/");
+
+  const playlist = await fetchPlaylist(context, playlistId);
 
   if (!playlist) throw redirect("/");
 
-  const [form] = await context.db.orm
-    .select()
-    .from(context.db.configs)
-    .where(eq(context.db.configs.playlist_id, params.id))
-    .limit(1);
+  const [config] = await context.db.select(context.db.configs, {
+    where: (table) => eq(table.playlist_id, playlistId),
+  });
 
-  if (!form) throw redirect(`/`);
-  if (form.enable_voting) throw redirect(`/vote/${params.id}`);
+  const votes = await context.db.select(context.db.votes, {
+    where: (table) => eq(table.playlist_id, playlistId),
+  });
 
-  const isFormCreator = form.created_by === context.user.id;
+  if (!config) throw redirect(`/`);
+  if (config.enable_voting) throw redirect(`/vote/${params.id}`);
 
-  const votes = await context.db.orm
-    .select()
-    .from(context.db.votes)
-    .where(eq(context.db.votes.playlist_id, params.id));
+  const users = await fetchUsersFromPlaylist(context, playlist);
 
   const tracks = playlist.tracks.items
-    .map((item) => {
-      if (!item.track) return undefined;
-      return { ...item.track, added_by: item.added_by };
-    })
+    .map((item) =>
+      item.track ? { ...item.track, added_by: item.added_by } : null,
+    )
     .filter((track) => !!track);
-
-  const [...userIds] = new Set(
-    playlist.tracks.items.map((item) => {
-      return item.added_by.id;
-    }),
-  );
-
-  const userResponse = await Promise.all(
-    userIds.map((id) => {
-      type Response = SpotifyApi.UserProfileResponse;
-      return context.spotify.fetch<Response>(
-        config.spotify.endpoints.users + `/${id}`,
-      );
-    }),
-  );
-
-  const users = userResponse.filter((user) => !!user);
 
   const bestTrackVote = processBestTrackResults(votes, tracks);
   const bestUserVote = processBestUserResults(votes, users);
   const mostTrackVotes = processMostTrackVotesResults(votes, users, tracks);
+
+  const hasCreated = config.created_by === userId;
 
   return {
     playlist,
@@ -81,20 +63,17 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
       bestUserVote,
       mostTrackVotes,
     },
-    isFormCreator,
+    hasCreated,
   };
 }
 
 export default function Page() {
-  const { playlist, votes, data, isFormCreator } =
-    useLoaderData<typeof loader>();
-
-  console.log(votes);
+  const { playlist, votes, data, hasCreated } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col gap-3">
       <HeaderResults playlist={playlist} />
-      {!isFormCreator ? null : (
+      {!hasCreated ? null : (
         <ActionBar
           message="You created this form."
           actions={[

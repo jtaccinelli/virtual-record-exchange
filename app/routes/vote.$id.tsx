@@ -1,113 +1,65 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
-import { Link, useLoaderData } from "@remix-run/react";
-
-import { config } from "config";
-import { HeaderVote } from "@app/components/header-vote";
-import { FormVote } from "@app/components/form-vote";
+import { useLoaderData } from "@remix-run/react";
 import { eq } from "drizzle-orm";
-import { DialogRevoteForm } from "@app/components/dialog-revote-form";
+
+import { fetchPlaylist, fetchUsersFromPlaylist } from "@app/utils/data";
+
 import { DialogCantVote } from "@app/components/dialog-cant-vote";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { DialogCloseVoting } from "@app/components/dialog-close-voting";
-import { ActionBar } from "@app/components/action-bar";
 
-// 6wVtemFdsmYio00dj7cojJ
+import { HeaderVote } from "@app/components/header-vote";
+import { ActionBar } from "@app/components/action-bar";
+import { FormVote } from "@app/components/form-vote";
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
-  if (!params.id || !context.user) throw redirect("/");
+  const userId = context.user?.id;
+  const playlistId = params.id;
 
-  const [form] = await context.db.orm
-    .select()
-    .from(context.db.configs)
-    .where(eq(context.db.configs.playlist_id, params.id))
-    .limit(1);
+  if (!playlistId || !userId) throw redirect("/");
 
-  if (!form) throw redirect(`/`);
-  if (!form.enable_voting) throw redirect(`/results/${params.id}`);
-
-  type Response = SpotifyApi.PlaylistObjectFull;
-  const playlist = await context.spotify.fetch<Response>(
-    config.spotify.endpoints.playlists + `/${params.id}`,
-  );
+  const playlist = await fetchPlaylist(context, playlistId);
 
   if (!playlist) throw redirect("/");
 
-  const [...userIds] = new Set(
-    playlist.tracks.items.map((item) => {
-      return item.added_by.id;
-    }),
-  );
-
-  const users = await Promise.all(
-    userIds.map((id) => {
-      type Response = SpotifyApi.UserProfileResponse;
-      return context.spotify.fetch<Response>(
-        config.spotify.endpoints.users + `/${id}`,
-      );
-    }),
-  );
-
-  const tracks = playlist.tracks.items
-    .filter((item) => {
-      return context.user?.id !== item.added_by.id;
-    })
-    .map((item) => {
-      return item.track;
-    });
-
-  const votes = await context.db.orm
-    .select()
-    .from(context.db.votes)
-    .where(eq(context.db.votes.playlist_id, params.id));
-
-  const previousVote = votes.find((vote) => {
-    return vote.voter_id === context?.user?.id;
+  const [config] = await context.db.select(context.db.configs, {
+    where: (table) => eq(table.playlist_id, playlistId),
   });
 
-  const hasNotContributed = !userIds.some((id) => id === context?.user?.id);
-  const isFormCreator = form.created_by === context.user.id;
+  const votes = await context.db.select(context.db.votes, {
+    where: (table) => eq(table.playlist_id, playlistId),
+  });
+
+  if (!config) throw redirect(`/`);
+  if (!config.enable_voting) throw redirect(`/results/${params.id}`);
+
+  const users = await fetchUsersFromPlaylist(context, playlist);
+  const hasContributed = users.some((user) => user.id === userId);
+  const hasCreated = config.created_by === userId;
 
   return {
     playlist,
-    users: users
-      .filter((user) => !!user)
-      .filter((user) => user.id !== context?.user?.id),
-    contributors: users.filter((user) => !!user),
-    tracks: tracks.filter((track) => !!track),
-    config: form,
+    users,
+    config,
     votes,
-    previousVote,
-    hasNotContributed,
-    isFormCreator,
+    hasContributed,
+    hasCreated,
   };
 }
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
 
-  if (data.hasNotContributed) {
+  if (!data.hasContributed) {
     return <DialogCantVote />;
   }
 
-  const {
-    playlist,
-    users,
-    contributors,
-    tracks,
-    config,
-    votes,
-    previousVote,
-    isFormCreator,
-  } = data;
+  const { playlist, users, config, votes, hasCreated } = data;
 
   return (
     <div className="flex flex-col">
-      <HeaderVote
-        playlist={playlist}
-        contributors={contributors}
-        votes={votes}
-      />
-      {!isFormCreator ? null : (
+      <HeaderVote playlist={playlist} users={users} votes={votes} />
+      {!hasCreated ? null : (
         <ActionBar
           message="You created this form."
           actions={[
@@ -122,14 +74,7 @@ export default function Page() {
           ]}
         />
       )}
-
-      <FormVote
-        tracks={tracks}
-        users={users}
-        playlist={playlist}
-        config={config}
-      />
-      <DialogRevoteForm vote={previousVote} playlist={playlist} />
+      <FormVote config={config} playlist={playlist} users={users} />
     </div>
   );
 }

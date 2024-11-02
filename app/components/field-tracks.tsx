@@ -5,8 +5,6 @@ import { SpotifyImage } from "./spotify-image";
 import { Pill } from "./pill";
 import { DialogSearch } from "./dialog-search";
 
-type Track = SpotifyApi.TrackObjectFull;
-
 type Props = {
   tracks: Track[];
   max?: number;

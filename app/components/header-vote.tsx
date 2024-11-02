@@ -4,16 +4,20 @@ import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 
 import { votes } from "context/database";
 import { SpotifyImage } from "./spotify-image";
+import { useRootLoaderData } from "@app/hooks/use-root-loader";
+import { DialogRevoteForm } from "./dialog-revote-form";
 
 type Props = {
-  playlist: SpotifyApi.PlaylistObjectFull;
-  contributors: SpotifyApi.UserProfileResponse[];
+  playlist: Playlist;
+  users: User[];
   votes: (typeof votes.$inferSelect)[];
 };
 
-export function HeaderVote({ playlist, contributors, votes }: Props) {
+export function HeaderVote({ playlist, users, votes }: Props) {
+  const { user } = useRootLoaderData();
+
   const { pending, voted } = useMemo(() => {
-    return contributors.reduce(
+    return users.reduce<{ pending: typeof users; voted: typeof users }>(
       (acc, user) => {
         const hasVoted = votes.some((vote) => vote.voter_id === user.id);
         if (hasVoted) acc.voted.push(user);
@@ -21,11 +25,15 @@ export function HeaderVote({ playlist, contributors, votes }: Props) {
         return acc;
       },
       {
-        pending: [] as typeof contributors,
-        voted: [] as typeof contributors,
+        pending: [],
+        voted: [],
       },
     );
-  }, [contributors, votes]);
+  }, [users, votes]);
+
+  const currentUserVote = useMemo(() => {
+    return votes.find((vote) => vote.voter_id === user?.id);
+  }, [user, votes]);
 
   return (
     <div className="flex w-full flex-col gap-6 p-6 pt-10">
@@ -36,7 +44,7 @@ export function HeaderVote({ playlist, contributors, votes }: Props) {
       <p className="text -mb-6 text-gray-400">Playlist Voting Form</p>
       <h3 className="heading">{playlist.name}</h3>
       <p className="text -mb-4 text-gray-400">
-        {voted.length} of {contributors.length} votes submitted
+        {voted.length} of {users.length} votes submitted
       </p>
       <div className="flex items-center gap-1 overflow-x-scroll">
         {voted.map((user) => {
@@ -58,6 +66,9 @@ export function HeaderVote({ playlist, contributors, votes }: Props) {
           );
         })}
       </div>
+      {!currentUserVote ? null : (
+        <DialogRevoteForm vote={currentUserVote} playlist={playlist} />
+      )}
     </div>
   );
 }
