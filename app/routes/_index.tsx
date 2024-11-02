@@ -1,79 +1,90 @@
-import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
+import { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { Await, useLoaderData } from "@remix-run/react";
 import { eq, like, or } from "drizzle-orm";
 
 import { HeaderHome } from "@app/components/header-list";
 import { ListPlaylists } from "@app/components/list-playlists";
+import { fetchPlaylist } from "@app/utils/data";
+import { Section } from "@app/components/section";
 
-import { config } from "config";
+import { Placeholder } from "@app/components/placeholder";
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  if (!context?.user?.id) return {};
+  async function playlistPromise() {
+    const userId = context?.user?.id;
+    if (!userId) return [];
 
-  const configs = await context.db.orm
-    .select()
-    .from(context.db.configs)
-    .where(
-      or(
-        like(context.db.configs.contributor_ids, `%${context.user.id}%`),
-        eq(context.db.configs.created_by, context.user.id),
-      ),
-    );
-
-  const votes = await context.db.orm
-    .select()
-    .from(context.db.votes)
-    .where(eq(context.db.votes.voter_id, context.user.id));
-
-  const playlists = await Promise.all(
-    configs.map((item) => {
-      type Response = SpotifyApi.PlaylistObjectFull;
-      return context.spotify.fetch<Response>(
-        config.spotify.endpoints.playlists + `/${item.playlist_id}`,
-      );
-    }),
-  );
-
-  const enrichedPlaylists = playlists.reduce((array, playlist) => {
-    if (!playlist) return array;
-
-    const config = configs.find((config) => config.playlist_id === playlist.id);
-    const vote = votes.find((vote) => vote.playlist_id === playlist.id);
-    if (!config) return array;
-
-    array.push({
-      data: playlist,
-      isOpen: !!config.enable_voting,
-      hasVoted: !!vote,
-      hasCreated: config.created_by === context?.user?.id,
+    const forms = await context.db.select(context.db.configs, {
+      where: (table) =>
+        or(
+          like(table.contributor_ids, `%${userId}%`),
+          eq(table.created_by, userId),
+        ),
     });
 
-    return array;
-  }, [] as EnrichedPlaylist[]);
+    const votes = await context.db.select(context.db.votes, {
+      where: (table) => eq(table.voter_id, userId),
+    });
+
+    const playlists = await Promise.all(
+      forms.map((item) => fetchPlaylist(context, item.playlist_id)),
+    );
+
+    const enrichedPlaylists = playlists.map((playlist) => {
+      if (!playlist) return undefined;
+
+      const form = forms.find((form) => form.playlist_id === playlist.id);
+      const vote = votes.find((vote) => vote.playlist_id === playlist.id);
+
+      if (!form) return undefined;
+
+      return {
+        data: playlist,
+        isOpen: !!form.enable_voting,
+        hasVoted: !!vote,
+        hasCreated: form.created_by === userId,
+      };
+    });
+
+    return enrichedPlaylists.filter((item) => !!item);
+  }
 
   return {
-    playlists: enrichedPlaylists,
+    playlists: playlistPromise(),
   };
+}
+
+function ListPlaylistsFallback() {
+  return <Placeholder label="Loading playlists..." loading />;
+}
+
+function ListPlaylistsError() {
+  return (
+    <Placeholder label="Something went wrong when fetching your playlists!" />
+  );
 }
 
 export default function Index() {
   const { playlists } = useLoaderData<typeof loader>();
 
-  if (typeof playlists === "undefined") return null;
-
   return (
     <div>
       <HeaderHome />
-      <ListPlaylists
-        title="Open Voting Forms"
-        filter={(playlist) => playlist.isOpen}
-        playlists={playlists}
-      />
-      <ListPlaylists
-        title="Closed Voting Forms"
-        playlists={playlists}
-        filter={(playlist) => !playlist.isOpen}
-      />
+      <Section title="Open Voting Forms">
+        <Suspense fallback={<ListPlaylistsFallback />}>
+          <Await resolve={playlists} errorElement={<ListPlaylistsError />}>
+            <ListPlaylists filter={(playlist) => !!playlist.isOpen} />
+          </Await>
+        </Suspense>
+      </Section>
+      <Section title="Closed Voting Forms">
+        <Suspense fallback={<ListPlaylistsFallback />}>
+          <Await resolve={playlists} errorElement={<ListPlaylistsError />}>
+            <ListPlaylists filter={(playlist) => !playlist.isOpen} />
+          </Await>
+        </Suspense>
+      </Section>
     </div>
   );
 }

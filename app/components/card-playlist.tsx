@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 
 import { SpotifyImage } from "./spotify-image";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { ActionMenu } from "./action-menu";
 
 type Props = {
