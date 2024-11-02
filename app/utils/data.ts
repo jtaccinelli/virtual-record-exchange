@@ -15,5 +15,5 @@ export function isNotFile(
 }
 
 export function isString(value: FormDataEntryValue | null): value is string {
-  return typeof value !== "string";
+  return typeof value === "string";
 }
