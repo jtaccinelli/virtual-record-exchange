@@ -5,8 +5,6 @@ import { SpotifyImage } from "./spotify-image";
 import { Pill } from "./pill";
 import { DialogSearch } from "./dialog-search";
 
-type User = SpotifyApi.UserProfileResponse;
-
 type Props = {
   users: User[];
   max?: number;

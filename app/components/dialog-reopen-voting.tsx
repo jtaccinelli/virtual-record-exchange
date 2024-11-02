@@ -3,7 +3,7 @@ import { Form } from "@remix-run/react";
 import { DialogConfirm } from "./dialog-confirm";
 
 type Props = {
-  playlist: SpotifyApi.PlaylistObjectFull;
+  playlist: Playlist;
   className: string;
 };
 

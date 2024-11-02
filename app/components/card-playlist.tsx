@@ -5,7 +5,7 @@ import { SpotifyImage } from "./spotify-image";
 import { ActionMenu } from "./action-menu";
 
 type Props = {
-  playlist: SpotifyApi.PlaylistObjectFull;
+  playlist: Playlist;
   href?: string;
   cta?: string;
   tags?: (string | false)[];

@@ -1,7 +1,7 @@
 import { ComponentProps } from "react";
 
 type Props = ComponentProps<"img"> & {
-  image?: SpotifyApi.ImageObject;
+  image?: Image;
 };
 
 export function SpotifyImage({ image, ...props }: Props) {

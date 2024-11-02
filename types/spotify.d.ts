@@ -6,6 +6,8 @@ type Playlist = SpotifyApi.PlaylistObjectFull;
 
 type Track = SpotifyApi.TrackObjectFull;
 
+type Image = SpotifyApi.ImageObject;
+
 type EnrichedPlaylist = {
   data: Playlist;
   addedBy?: UserPublic;

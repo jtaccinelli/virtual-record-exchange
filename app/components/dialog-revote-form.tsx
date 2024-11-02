@@ -4,8 +4,8 @@ import { votes } from "context/database";
 import { DialogBasic } from "./dialog-basic";
 
 type Props = {
+  playlist: Playlist;
   vote?: typeof votes.$inferSelect;
-  playlist: SpotifyApi.PlaylistObjectFull;
 };
 
 export function DialogRevoteForm({ vote, playlist }: Props) {

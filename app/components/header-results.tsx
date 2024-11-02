@@ -2,7 +2,7 @@ import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { Link } from "@remix-run/react";
 
 type Props = {
-  playlist: SpotifyApi.PlaylistObjectFull;
+  playlist: Playlist;
 };
 
 export function HeaderResults({ playlist }: Props) {

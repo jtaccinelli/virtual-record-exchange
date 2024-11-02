@@ -43,10 +43,7 @@ function initialiseValue(
   return map;
 }
 
-export function processBestTrackResults(
-  votes: Vote[],
-  tracks: SpotifyApi.TrackObjectFull[],
-) {
+export function processBestTrackResults(votes: Vote[], tracks: Track[]) {
   const ids = flattenIdsValues(votes.map((vote) => vote.track_ids));
 
   const data = ids.reduce<ResultValueMap>((map, id) => {
@@ -63,10 +60,7 @@ export function processBestTrackResults(
   return Array.from(data.values());
 }
 
-export function processBestUserResults(
-  votes: Vote[],
-  users: SpotifyApi.UserProfileResponse[],
-) {
+export function processBestUserResults(votes: Vote[], users: User[]) {
   const ids = flattenIdsValues(votes.map((vote) => vote.contributor_ids));
 
   const data = ids.reduce<ResultValueMap>((map, id) => {
@@ -85,10 +79,8 @@ export function processBestUserResults(
 
 export function processMostTrackVotesResults(
   votes: Vote[],
-  users: SpotifyApi.UserProfileResponse[],
-  tracks: (SpotifyApi.TrackObjectFull & {
-    added_by: SpotifyApi.UserObjectPublic;
-  })[],
+  users: User[],
+  tracks: (Track & { added_by: UserPublic })[],
 ) {
   const ids = flattenIdsValues(votes.map((vote) => vote.track_ids));
 
