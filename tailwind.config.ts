@@ -6,6 +6,15 @@ import colors from "tailwindcss/colors";
 export default {
   content: ["./app/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    keyframes: {
+      load: {
+        "0%": { width: "0%" },
+        "100%": { width: "100%" },
+      },
+    },
+    animation: {
+      load: "load 5s ease",
+    },
     extend: {
       fontFamily: {
         sans: ["PT Root UI", "Arial", "sans-serif"],

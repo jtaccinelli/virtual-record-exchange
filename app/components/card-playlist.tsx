@@ -6,7 +6,7 @@ import { ActionMenu } from "./action-menu";
 
 type Props = {
   playlist: Playlist;
-  href?: string;
+  href: string;
   cta?: string;
   tags?: (string | false)[];
   actions?: (ReactNode | false)[];
@@ -15,20 +15,16 @@ type Props = {
 export function CardPlaylist({ playlist, href, cta, tags, actions }: Props) {
   return (
     <div className="flex w-full flex-col overflow-hidden rounded bg-gray-800">
-      <div className="flex">
+      <Link to={href ?? ""} className="flex">
         <div className="flex min-w-0 grow flex-col justify-center gap-1  p-3">
           <p className="label w-full truncate font-semibold">{playlist.name}</p>
-          {!cta || !href ? null : (
-            <Link to={href} className="link">
-              {cta}
-            </Link>
-          )}
+          {!cta || !href ? null : <p className="link">{cta}</p>}
         </div>
         <SpotifyImage
           image={playlist?.images[0]}
           className="aspect-square w-20 shrink-0 bg-gray-950 object-cover"
         />
-      </div>
+      </Link>
       <div className="flex items-center justify-between border-t border-gray-900 p-3 text-gray-400">
         <div className="flex items-center gap-1">
           <Link to={playlist.external_urls.spotify} target="_blank">
