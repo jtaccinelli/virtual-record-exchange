@@ -128,6 +128,7 @@ export function FieldUsers({ users, max = 1 }: Props) {
         cta="Add your users..."
         label="Search Users"
         placeholder="Search for users by name..."
+        className="field-input rounded border-transparent bg-gray-700 text-start text-gray-500"
         items={users}
         filter={handleFilter}
         renderItem={renderUser}

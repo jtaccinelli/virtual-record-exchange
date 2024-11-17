@@ -11,6 +11,7 @@ import { DialogCloseVoting } from "@app/components/dialog-close-voting";
 import { HeaderVote } from "@app/components/header-vote";
 import { ActionBar } from "@app/components/action-bar";
 import { FormVote } from "@app/components/form-vote";
+import { DialogProxyVote } from "@app/components/dialog-proxy-vote";
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
   const userId = context.user?.id;
@@ -63,6 +64,11 @@ export default function Page() {
         <ActionBar
           message="You created this form."
           actions={[
+            <DialogProxyVote
+              playlist={playlist}
+              users={users}
+              className="text whitespace-nowrap px-3 py-2 text-left"
+            />,
             <DialogCloseVoting
               playlist={playlist}
               className="text whitespace-nowrap px-3 py-2 text-left"

@@ -12,6 +12,7 @@ type Props<Item> = {
   items: Item[];
   renderItem: (item: Item) => ReactNode;
   filter: (item: Item, query: string) => boolean;
+  className?: string;
 };
 
 export function DialogSearch<Item>({
@@ -22,6 +23,7 @@ export function DialogSearch<Item>({
   items,
   filter,
   renderItem,
+  className,
 }: Props<Item>) {
   const [isOpen, setIsOpen] = useBoolean(false);
   const [query, setQuery] = useState("");
@@ -49,13 +51,13 @@ export function DialogSearch<Item>({
       <button
         type="button"
         onClick={setIsOpen.true}
-        className="field-input rounded border-transparent bg-gray-700 text-start text-gray-500"
+        className={className}
         disabled={disabled}
       >
         {cta}
       </button>
       <Dialog open={isOpen} onClose={setIsOpen.false} className="flex flex-col">
-        <div className="flex h-full flex-col gap-3 p-6">
+        <div className="flex h-full flex-col gap-3 p-6 text-white">
           <label className="label">{label}</label>
           <div className="sticky top-6 flex h-11 w-full rounded bg-gray-700 text-white">
             <input
@@ -68,12 +70,12 @@ export function DialogSearch<Item>({
               className="grow rounded border-transparent bg-transparent placeholder:text-gray-500"
             />
             <button
-              className="flex size-11 items-center justify-center"
+              className="group flex size-11 items-center justify-center"
               onClick={handleClear}
               disabled={!query}
             >
-              <MagnifyingGlassIcon className="hidden size-4 disabled:block" />
-              <XMarkIcon className="size-4 disabled:hidden" />
+              <MagnifyingGlassIcon className="hidden size-4 group-disabled:block" />
+              <XMarkIcon className="size-4 group-disabled:hidden" />
             </button>
           </div>
           {!filteredItems.length ? (

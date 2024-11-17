@@ -133,6 +133,7 @@ export function FieldTracks({ tracks, max = 3 }: Props) {
         cta="Add your tracks..."
         label="Search Tracks"
         placeholder="Search for tracks by name..."
+        className="field-input rounded border-transparent bg-gray-700 text-start text-gray-500"
         items={tracks}
         filter={handleFilter}
         renderItem={renderTrack}
