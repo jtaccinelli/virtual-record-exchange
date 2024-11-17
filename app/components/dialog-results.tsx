@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import { Dialog } from "./dialog";
 import { ResultValue } from "@app/utils/results";
+import { useBoolean } from "@app/hooks/use-boolean";
 
 type Props = {
   label: string;
@@ -10,7 +11,7 @@ type Props = {
 };
 
 export function DialogResults({ label, cta, data }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useBoolean(false);
 
   const sortedData = useMemo(() => {
     return data.sort((a, b) => {
@@ -20,24 +21,16 @@ export function DialogResults({ label, cta, data }: Props) {
     });
   }, [data]);
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
   return (
     <>
       <button
         type="button"
-        onClick={handleOpen}
+        onClick={setIsOpen.true}
         className="btn btn-primary self-start"
       >
         {cta}
       </button>
-      <Dialog open={isOpen} onClose={handleClose} className="flex flex-col">
+      <Dialog open={isOpen} onClose={setIsOpen.false} className="flex flex-col">
         <div className="flex h-full flex-col gap-3 p-6">
           <label className="label">{label}</label>
           {!sortedData.length ? (

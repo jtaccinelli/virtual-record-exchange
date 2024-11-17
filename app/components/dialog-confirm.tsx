@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 
 import { DialogBasic } from "./dialog-basic";
+import { useBoolean } from "@app/hooks/use-boolean";
 
 type Props = {
   label: string;
@@ -19,19 +20,11 @@ export function DialogConfirm({
   className,
   children,
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+  const [isOpen, setIsOpen] = useBoolean(false);
 
   return (
     <>
-      <button onClick={handleOpen} className={className} tabIndex={0}>
+      <button onClick={setIsOpen.true} className={className} tabIndex={0}>
         {label}
       </button>
       <DialogBasic
@@ -41,7 +34,7 @@ export function DialogConfirm({
         subheading={subheading}
       >
         {children}
-        <button onClick={handleClose} className="btn btn-secondary">
+        <button onClick={setIsOpen.false} className="btn btn-secondary">
           Cancel
         </button>
       </DialogBasic>

@@ -1,6 +1,8 @@
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/16/solid";
-import { Dialog } from "./dialog";
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/16/solid";
+
+import { useBoolean } from "@app/hooks/use-boolean";
+import { Dialog } from "./dialog";
 
 type Props<Item> = {
   label: string;
@@ -21,7 +23,7 @@ export function DialogSearch<Item>({
   filter,
   renderItem,
 }: Props<Item>) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useBoolean(false);
   const [query, setQuery] = useState("");
 
   const filteredItems = useMemo(() => {
@@ -29,14 +31,6 @@ export function DialogSearch<Item>({
       return filter(item, query);
     });
   }, [items, query]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -47,20 +41,20 @@ export function DialogSearch<Item>({
   };
 
   useEffect(() => {
-    if (disabled) handleClose();
+    if (disabled) setIsOpen.false();
   }, [disabled]);
 
   return (
     <>
       <button
         type="button"
-        onClick={handleOpen}
+        onClick={setIsOpen.true}
         className="field-input rounded border-transparent bg-gray-700 text-start text-gray-500"
         disabled={disabled}
       >
         {cta}
       </button>
-      <Dialog open={isOpen} onClose={handleClose} className="flex flex-col">
+      <Dialog open={isOpen} onClose={setIsOpen.false} className="flex flex-col">
         <div className="flex h-full flex-col gap-3 p-6">
           <label className="label">{label}</label>
           <div className="sticky top-6 flex h-11 w-full rounded bg-gray-700 text-white">
