@@ -14,7 +14,7 @@ export function Footer() {
           className="size-8 rounded-full"
         />
         <p className="text flex flex-col text-white">
-          <span className="text-gray-300">Voting on behalf of</span>
+          <span className="text-gray-300">Signed in as</span>
           <span className="font-semibold">{user?.display_name}</span>
         </p>
       </div>
