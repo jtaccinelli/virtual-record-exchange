@@ -6,7 +6,7 @@ import { ActionMenu } from "./action-menu";
 
 type Props = {
   playlist: Playlist;
-  href: string;
+  href?: string;
   cta?: string;
   tags?: (string | false)[];
   actions?: (ReactNode | false)[];
