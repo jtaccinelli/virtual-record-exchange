@@ -12,10 +12,12 @@ import { HeaderVote } from "@app/components/header-vote";
 import { ActionBar } from "@app/components/action-bar";
 import { FormVote } from "@app/components/form-vote";
 import { DialogProxyVote } from "@app/components/dialog-proxy-vote";
+import { useRootLoaderData } from "@app/hooks/use-root-loader";
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
   const userId = context.user?.id;
   const playlistId = params.id;
+  const url = new URL(request.url);
 
   if (!playlistId || !userId) throw redirect("/");
 
@@ -35,6 +37,10 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!config.enable_voting) throw redirect(`/results/${params.id}`);
 
   const users = await fetchUsersFromPlaylist(context, playlist);
+
+  const proxiedUserId = url.searchParams.get("user");
+  const proxiedUser = users.find((user) => user.id === proxiedUserId);
+
   const hasContributed = users.some((user) => user.id === userId);
   const hasCreated = config.created_by === userId;
 
@@ -45,21 +51,28 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     votes,
     hasContributed,
     hasCreated,
+    proxiedUser,
   };
 }
 
 export default function Page() {
+  const { user } = useRootLoaderData();
   const data = useLoaderData<typeof loader>();
 
   if (!data.hasContributed) {
     return <DialogCantVote />;
   }
 
-  const { playlist, users, config, votes, hasCreated } = data;
+  const { playlist, users, config, votes, hasCreated, proxiedUser } = data;
 
   return (
     <div className="flex flex-col">
-      <HeaderVote playlist={playlist} users={users} votes={votes} />
+      <HeaderVote
+        playlist={playlist}
+        users={users}
+        votes={votes}
+        voter={proxiedUser ?? user}
+      />
       {!hasCreated ? null : (
         <ActionBar
           message="You created this form."
@@ -67,6 +80,7 @@ export default function Page() {
             <DialogProxyVote
               playlist={playlist}
               users={users}
+              votes={votes}
               className="text whitespace-nowrap px-3 py-2 text-left"
             />,
             <DialogCloseVoting
@@ -80,7 +94,12 @@ export default function Page() {
           ]}
         />
       )}
-      <FormVote config={config} playlist={playlist} users={users} />
+      <FormVote
+        config={config}
+        playlist={playlist}
+        users={users}
+        voter={proxiedUser ?? user}
+      />
     </div>
   );
 }

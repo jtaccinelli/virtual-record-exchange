@@ -10,14 +10,13 @@ import { useMemo } from "react";
 type Props = {
   playlist: Playlist;
   users: User[];
+  voter?: User;
   config: typeof configs.$inferSelect;
 };
 
-export function FormVote({ users, playlist, config }: Props) {
-  const { user } = useRootLoaderData();
-
+export function FormVote({ users, playlist, config, voter }: Props) {
   const filteredTracks = useMemo(() => {
-    const userId = user?.id;
+    const userId = voter?.id;
     return playlist.tracks.items
       .filter((item) => (userId ? item.added_by.id !== userId : true))
       .map((item) => item.track)
@@ -25,7 +24,7 @@ export function FormVote({ users, playlist, config }: Props) {
   }, [playlist]);
 
   const filteredUsers = useMemo(() => {
-    const userId = user?.id;
+    const userId = voter?.id;
     return users.filter((user) => (userId ? user.id !== userId : true));
   }, [users]);
 
@@ -36,6 +35,7 @@ export function FormVote({ users, playlist, config }: Props) {
       method="post"
     >
       <input type="hidden" name="playlist-id" value={playlist.id} />
+      <input type="hidden" name="voter-id" value={voter?.id} />
       <FieldTracks tracks={filteredTracks} max={config.track_vote_count ?? 3} />
       <FieldUsers
         users={filteredUsers}

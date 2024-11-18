@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/16/solid";
 
 import { useBoolean } from "@app/hooks/use-boolean";
 import { Dialog } from "./dialog";
+import { useNavigation } from "@remix-run/react";
 
 type Props<Item> = {
   label: string;
@@ -27,6 +28,7 @@ export function DialogSearch<Item>({
 }: Props<Item>) {
   const [isOpen, setIsOpen] = useBoolean(false);
   const [query, setQuery] = useState("");
+  const navigation = useNavigation();
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -45,6 +47,10 @@ export function DialogSearch<Item>({
   useEffect(() => {
     if (disabled) setIsOpen.false();
   }, [disabled]);
+
+  useEffect(() => {
+    if (navigation.state !== "idle") setIsOpen.false();
+  }, [navigation]);
 
   return (
     <>

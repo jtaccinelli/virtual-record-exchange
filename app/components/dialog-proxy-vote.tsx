@@ -3,17 +3,22 @@ import { Link, useNavigate } from "@remix-run/react";
 
 import { SpotifyImage } from "./spotify-image";
 import { DialogSearch } from "./dialog-search";
+import { votes } from "context/database";
 
 type Props = {
   users: User[];
   playlist: Playlist;
   className?: string;
+  votes: (typeof votes.$inferSelect)[];
 };
 
-export function DialogProxyVote({ users, playlist, className }: Props) {
+export function DialogProxyVote({ users, playlist, votes, className }: Props) {
   const navigate = useNavigate();
 
   const handleFilter = (item: User, query: string) => {
+    const hasVoted = votes.some((vote) => vote.voter_id === item.id);
+    if (hasVoted) return false;
+
     if (!query) return true;
     const term = query.toLowerCase();
     const displayName = item?.display_name ?? item.id;

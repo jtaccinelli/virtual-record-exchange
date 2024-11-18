@@ -12,12 +12,14 @@ export async function action({ context, request }: ActionFunctionArgs) {
   const trackIds = form.get("track-ids");
   const honourableMentions = form.get("honourable-mentions");
   const shameVotes = form.get("shame-votes");
+  const voterId = form.get("voter-id") ?? userId;
 
   const hasValidData =
     isString(playlistId) &&
     isString(contributorIds) &&
     isString(trackIds) &&
     isNotFile(honourableMentions) &&
+    isNotFile(voterId) &&
     isNotFile(shameVotes);
 
   if (!hasValidData) {
@@ -27,7 +29,7 @@ export async function action({ context, request }: ActionFunctionArgs) {
   await context.db.insert(context.db.votes, {
     set: () => ({
       playlist_id: playlistId,
-      voter_id: userId,
+      voter_id: voterId,
       contributor_ids: contributorIds,
       track_ids: trackIds,
       honourable_mentions: honourableMentions,
