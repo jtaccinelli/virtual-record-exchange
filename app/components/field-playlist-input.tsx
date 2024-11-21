@@ -3,9 +3,9 @@ import { useFetcher } from "@remix-run/react";
 
 import { loader } from "@app/routes/api.playlist.fetch";
 
-import { CardPlaylist } from "./card-playlist";
-import { Alert } from "./alert";
-import { Placeholder } from "./placeholder";
+import { Alert } from "@app/components/alert";
+import { CardPlaylist } from "@app/components/card-playlist";
+import { Placeholder } from "@app/components/placeholder";
 
 const URL_STARTER = "https://open.spotify.com/playlist/";
 

@@ -1,9 +1,10 @@
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { useNavigation } from "@remix-run/react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/16/solid";
 
 import { useBoolean } from "@app/hooks/use-boolean";
-import { Dialog } from "./dialog";
-import { useNavigation } from "@remix-run/react";
+
+import { Dialog } from "@app/components/dialog";
 
 type Props<Item> = {
   label: string;

@@ -1,10 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
-import { Link } from "@remix-run/react";
 
-import { SpotifyImage } from "./spotify-image";
-import { Pill } from "./pill";
-import { DialogSearch } from "./dialog-search";
-import { CardUser } from "./card-user";
+import { CardUser } from "@app/components/card-user";
+import { DialogSearch } from "@app/components/dialog-search";
+import { Pill } from "@app/components/pill";
 
 type Props = {
   users: User[];

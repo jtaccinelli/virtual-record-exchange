@@ -3,9 +3,9 @@ import { Link } from "@remix-run/react";
 import { ArrowLeftIcon, CheckIcon } from "@heroicons/react/16/solid";
 
 import { votes } from "context/database";
-import { SpotifyImage } from "./spotify-image";
-import { useRootLoaderData } from "@app/hooks/use-root-loader";
-import { DialogRevoteForm } from "./dialog-revote-form";
+
+import { DialogRevoteForm } from "@app/components/dialog-revote-form";
+import { SpotifyImage } from "@app/components/spotify-image";
 
 type Props = {
   playlist: Playlist;

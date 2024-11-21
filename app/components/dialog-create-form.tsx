@@ -1,6 +1,7 @@
-import { Dialog } from "./dialog";
-import { FormCreate } from "./form-create";
 import { useBoolean } from "@app/hooks/use-boolean";
+
+import { Dialog } from "@app/components/dialog";
+import { FormCreate } from "@app/components/form-create";
 
 export function DialogCreateForm() {
   const [isOpen, setIsOpen] = useBoolean(false);

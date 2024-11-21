@@ -1,5 +1,5 @@
-import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { Link } from "@remix-run/react";
+import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 
 type Props = {
   playlist: Playlist;

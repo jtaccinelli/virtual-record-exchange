@@ -1,7 +1,7 @@
 import { Form } from "@remix-run/react";
 
-import { FieldTabs } from "./field-tabs";
-import { FieldPlaylistInput } from "./field-playlist-input";
+import { FieldPlaylistInput } from "@app/components/field-playlist-input";
+import { FieldTabs } from "@app/components/field-tabs";
 
 export function FormCreate() {
   return (

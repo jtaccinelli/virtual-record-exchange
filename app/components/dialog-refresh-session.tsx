@@ -1,7 +1,8 @@
 import { Link } from "@remix-run/react";
 
 import { useRootLoaderData } from "@app/hooks/use-root-loader";
-import { DialogBasic } from "./dialog-basic";
+
+import { DialogBasic } from "@app/components/dialog-basic";
 
 export function DialogRefreshSession() {
   const { isLoggedIn, isTokenExpired } = useRootLoaderData();

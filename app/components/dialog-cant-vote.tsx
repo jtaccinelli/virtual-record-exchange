@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 
-import { DialogBasic } from "./dialog-basic";
+import { DialogBasic } from "@app/components/dialog-basic";
 
 export function DialogCantVote() {
   return (

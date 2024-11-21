@@ -1,11 +1,11 @@
+import { useMemo } from "react";
 import { Form } from "@remix-run/react";
 
-import { FieldTracks } from "@app/components/field-tracks";
+import { configs } from "context/database";
+
 import { FieldUsers } from "@app/components/field-users";
 import { FieldTextarea } from "@app/components/field-textarea";
-import { configs } from "context/database";
-import { useRootLoaderData } from "@app/hooks/use-root-loader";
-import { useMemo } from "react";
+import { FieldTracks } from "@app/components/field-tracks";
 
 type Props = {
   playlist: Playlist;

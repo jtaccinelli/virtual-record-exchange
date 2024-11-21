@@ -1,5 +1,4 @@
 import { votes } from "context/database";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 type Vote = typeof votes.$inferSelect;
 

@@ -9,10 +9,10 @@ import { LoaderFunctionArgs } from "@remix-run/cloudflare";
 
 import "./styles.css";
 
-import { Favicon } from "@app/components/favicon";
-import { Footer } from "@app/components/footer";
 import { DialogSignIn } from "@app/components/dialog-sign-in";
 import { DialogRefreshSession } from "@app/components/dialog-refresh-session";
+import { Favicon } from "@app/components/favicon";
+import { Footer } from "@app/components/footer";
 
 export function meta() {
   return [

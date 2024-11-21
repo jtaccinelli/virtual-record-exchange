@@ -1,5 +1,6 @@
-import { votes } from "context/database";
 import { useMemo } from "react";
+
+import { votes } from "context/database";
 
 type Vote = typeof votes.$inferSelect;
 

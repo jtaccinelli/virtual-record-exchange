@@ -1,6 +1,7 @@
-import { isNotFile, isString } from "@app/utils/data";
 import { ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { and, eq } from "drizzle-orm";
+
+import { isString } from "@app/utils/data";
 
 export async function action({ context, request }: ActionFunctionArgs) {
   const userId = context?.user?.id;

@@ -1,5 +1,9 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
+import {
+  LoaderFunctionArgs,
+  MetaFunction,
+  redirect,
+} from "@remix-run/cloudflare";
 import { eq } from "drizzle-orm";
 
 import {
@@ -9,16 +13,13 @@ import {
 } from "@app/utils/results";
 import { fetchPlaylist, fetchUsersFromPlaylist } from "@app/utils/data";
 
+import { ActionBar } from "@app/components/action-bar";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
-
 import { HeaderResults } from "@app/components/header-results";
-import { ActionBar } from "@app/components/action-bar";
 import { ResultsList } from "@app/components/results-list";
 import { ResultsBar } from "@app/components/results-bar";
 import { ResultsPie } from "@app/components/results-pie";
-
-// 6wVtemFdsmYio00dj7cojJ
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
   const userId = context.user?.id;
@@ -66,6 +67,22 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     hasCreated,
   };
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) return [];
+
+  const { playlist } = data;
+
+  return [
+    {
+      title: `Result for "${playlist.name}"`,
+    },
+    {
+      property: "og:image",
+      content: playlist.images[0].url,
+    },
+  ];
+};
 
 export default function Page() {
   const { playlist, votes, data, hasCreated } = useLoaderData<typeof loader>();

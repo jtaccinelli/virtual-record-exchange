@@ -1,6 +1,8 @@
-import { useRootLoaderData } from "@app/hooks/use-root-loader";
-import { SpotifyImage } from "./spotify-image";
 import { Link, useNavigation } from "@remix-run/react";
+
+import { useRootLoaderData } from "@app/hooks/use-root-loader";
+
+import { SpotifyImage } from "@app/components/spotify-image";
 
 export function Footer() {
   const { user } = useRootLoaderData();

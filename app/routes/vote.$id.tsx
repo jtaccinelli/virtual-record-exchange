@@ -4,15 +4,15 @@ import { eq } from "drizzle-orm";
 
 import { fetchPlaylist, fetchUsersFromPlaylist } from "@app/utils/data";
 
+import { useRootLoaderData } from "@app/hooks/use-root-loader";
+
+import { ActionBar } from "@app/components/action-bar";
 import { DialogCantVote } from "@app/components/dialog-cant-vote";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { DialogCloseVoting } from "@app/components/dialog-close-voting";
-
-import { HeaderVote } from "@app/components/header-vote";
-import { ActionBar } from "@app/components/action-bar";
-import { FormVote } from "@app/components/form-vote";
 import { DialogProxyVote } from "@app/components/dialog-proxy-vote";
-import { useRootLoaderData } from "@app/hooks/use-root-loader";
+import { FormVote } from "@app/components/form-vote";
+import { HeaderVote } from "@app/components/header-vote";
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   const userId = context.user?.id;

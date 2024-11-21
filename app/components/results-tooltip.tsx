@@ -13,7 +13,6 @@ export function ResultsTooltip<Value extends ValueType, Name extends NameType>({
 
   const { count, name } = payload[0].payload;
 
-  console.log(label, payload);
   return (
     <div className="flex flex-col rounded bg-gray-800 px-2 py-1">
       <p className="label">{name}</p>

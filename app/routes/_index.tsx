@@ -3,11 +3,11 @@ import { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Await, useLoaderData } from "@remix-run/react";
 import { eq, like, or } from "drizzle-orm";
 
+import { fetchPlaylist } from "@app/utils/data";
+
 import { HeaderHome } from "@app/components/header-list";
 import { ListPlaylists } from "@app/components/list-playlists";
-import { fetchPlaylist } from "@app/utils/data";
 import { Section } from "@app/components/section";
-
 import { Placeholder } from "@app/components/placeholder";
 
 export async function loader({ context }: LoaderFunctionArgs) {

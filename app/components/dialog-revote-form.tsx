@@ -1,7 +1,8 @@
 import { Form, Link } from "@remix-run/react";
 
 import { votes } from "context/database";
-import { DialogBasic } from "./dialog-basic";
+
+import { DialogBasic } from "@app/components/dialog-basic";
 
 type Props = {
   playlist: Playlist;

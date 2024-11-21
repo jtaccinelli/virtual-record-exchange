@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 
-import { SpotifyImage } from "./spotify-image";
-import { ActionMenu } from "./action-menu";
+import { ActionMenu } from "@app/components/action-menu";
+import { SpotifyImage } from "@app/components/spotify-image";
 
 type Props = {
   playlist: Playlist;

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { ActionMenu } from "./action-menu";
+import { ActionMenu } from "@app/components/action-menu";
 
 type Props = {
   message: string;

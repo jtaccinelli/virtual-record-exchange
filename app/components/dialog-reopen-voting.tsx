@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react";
 
-import { DialogConfirm } from "./dialog-confirm";
+import { DialogConfirm } from "@app/components/dialog-confirm";
 
 type Props = {
   playlist: Playlist;

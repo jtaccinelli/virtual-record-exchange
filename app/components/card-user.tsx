@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
-import { SpotifyImage } from "./spotify-image";
+
+import { SpotifyImage } from "@app/components/spotify-image";
 
 type Props = {
   user: User;

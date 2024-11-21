@@ -5,12 +5,13 @@ import {
   Rectangle,
   ResponsiveContainer,
   Tooltip,
-  XAxis,
 } from "recharts";
 
 import { ResultValue } from "@app/utils/results";
-import { ResultsTooltip } from "./results-tooltip";
-import { DialogResults } from "./dialog-results";
+
+import { DialogResults } from "@app/components/dialog-results";
+import { ResultsTooltip } from "@app/components/results-tooltip";
+import { ResultsWinner } from "@app/components/results-winner";
 
 type Props = {
   label: string;
@@ -55,30 +56,7 @@ export function ResultsBar({ label, data }: Props) {
           </ResponsiveContainer>
         )}
       </div>
-      <div className="flex items-end justify-between px-3">
-        <label className="label">{label}</label>
-        <p className="text text-gray-400">
-          {total} total {total > 1 ? "responses" : "response"}
-        </p>
-      </div>
-      <div className="flex flex-col overflow-hidden rounded">
-        {!winners.length ? (
-          <p className="text flex items-center justify-center rounded border border-gray-600 p-4 text-gray-600">
-            No data
-          </p>
-        ) : (
-          winners.map((winner) => (
-            <p className="flex justify-between border-b border-gray-900 bg-gray-800 p-3 text-left last:border-b-0">
-              <span className="label grow truncate text-white">
-                {winner.name}
-              </span>
-              <span className="text whitespace-nowrap text-gray-400">
-                {winner.count} {winner.count > 1 ? "votes" : "vote"}
-              </span>
-            </p>
-          ))
-        )}
-      </div>
+      <ResultsWinner data={winners} label={label} total={total} />
       <DialogResults data={data} label={label} cta="See All Results" />
     </div>
   );

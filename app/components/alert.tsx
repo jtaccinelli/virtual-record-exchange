@@ -1,5 +1,5 @@
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { Link } from "@remix-run/react";
+import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 type Props = {
   message: string;

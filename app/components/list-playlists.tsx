@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-
-import { CardPlaylist, CardPlaylistSkeleton } from "./card-playlist";
-import { DialogCloseVoting } from "./dialog-close-voting";
-import { DialogDeleteForm } from "./dialog-delete-form";
-import { DialogReopenVoting } from "./dialog-reopen-voting";
 import { useAsyncValue } from "@remix-run/react";
-import { Placeholder } from "./placeholder";
+
+import { CardPlaylist } from "@app/components/card-playlist";
+import { DialogCloseVoting } from "@app/components/dialog-close-voting";
+import { DialogDeleteForm } from "@app/components/dialog-delete-form";
+import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
+import { Placeholder } from "@app/components/placeholder";
 
 type Props = {
   filter: (playlist: EnrichedPlaylist) => boolean;

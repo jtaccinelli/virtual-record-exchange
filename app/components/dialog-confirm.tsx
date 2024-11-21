@@ -1,7 +1,7 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
-import { DialogBasic } from "./dialog-basic";
 import { useBoolean } from "@app/hooks/use-boolean";
+import { DialogBasic } from "@app/components/dialog-basic";
 
 type Props = {
   label: string;

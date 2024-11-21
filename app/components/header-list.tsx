@@ -1,4 +1,4 @@
-import { DialogCreateForm } from "./dialog-create-form";
+import { DialogCreateForm } from "@app/components/dialog-create-form";
 
 export function HeaderHome() {
   return (

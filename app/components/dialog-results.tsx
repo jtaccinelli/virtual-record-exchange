@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import { Dialog } from "./dialog";
 import { ResultValue } from "@app/utils/results";
+
 import { useBoolean } from "@app/hooks/use-boolean";
+
+import { Dialog } from "@app/components/dialog";
 
 type Props = {
   label: string;
