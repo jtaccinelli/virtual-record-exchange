@@ -13,6 +13,8 @@ import {
 } from "@app/utils/results";
 import { fetchPlaylist, fetchUsersFromPlaylist } from "@app/utils/data";
 
+import { PlaylistProvider } from "@app/hooks/use-playlist";
+
 import { ActionBar } from "@app/components/action-bar";
 import { DialogDeleteForm } from "@app/components/dialog-delete-form";
 import { DialogReopenVoting } from "@app/components/dialog-reopen-voting";
@@ -88,38 +90,54 @@ export default function Page() {
   const { playlist, votes, data, hasCreated } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex flex-col gap-3">
-      <HeaderResults playlist={playlist} />
-      {!hasCreated ? null : (
-        <ActionBar
-          message="You created this form."
-          actions={[
-            <DialogReopenVoting
-              playlist={playlist}
-              className="text whitespace-nowrap px-3 py-2 text-left"
-            />,
-            <DialogDeleteForm
-              playlist={playlist}
-              className="text whitespace-nowrap px-3 py-2 text-left"
-            />,
-          ]}
-        />
-      )}
-      <div className="flex flex-col divide-y divide-gray-800">
-        <ResultsBar label="Best Track" data={data.bestTrackVote} />
-        <ResultsBar label="Most Track Votes" data={data.mostTrackVotes} />
-        <ResultsPie label="Best Contributor" data={data.bestUserVote} />
-        <ResultsList
-          label="Honourable Mentions"
-          votes={votes}
-          map={(vote) => vote.honourable_mentions}
-        />
-        <ResultsList
-          label="Shame Votes"
-          votes={votes}
-          map={(vote) => vote.shame_votes}
-        />
+    <PlaylistProvider value={playlist}>
+      <div className="flex flex-col gap-3">
+        <HeaderResults playlist={playlist} />
+        {!hasCreated ? null : (
+          <ActionBar
+            message="You created this form."
+            actions={[
+              <DialogReopenVoting
+                playlist={playlist}
+                className="text whitespace-nowrap px-3 py-2 text-left"
+              />,
+              <DialogDeleteForm
+                playlist={playlist}
+                className="text whitespace-nowrap px-3 py-2 text-left"
+              />,
+            ]}
+          />
+        )}
+        <div className="flex flex-col divide-y divide-gray-800">
+          <ResultsBar
+            label="Best Track"
+            data={data.bestTrackVote}
+            canTiebreak={hasCreated}
+            field="track-ids"
+          />
+          <ResultsBar
+            label="Most Track Votes"
+            data={data.mostTrackVotes}
+            field="track-ids"
+          />
+          <ResultsPie
+            label="Best Contributor"
+            data={data.bestUserVote}
+            canTiebreak={hasCreated}
+            field="user-ids"
+          />
+          <ResultsList
+            label="Honourable Mentions"
+            votes={votes}
+            map={(vote) => vote.honourable_mentions}
+          />
+          <ResultsList
+            label="Shame Votes"
+            votes={votes}
+            map={(vote) => vote.shame_votes}
+          />
+        </div>
       </div>
-    </div>
+    </PlaylistProvider>
   );
 }

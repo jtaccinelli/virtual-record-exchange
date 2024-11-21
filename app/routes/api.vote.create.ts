@@ -17,8 +17,8 @@ export async function action({ context, request }: ActionFunctionArgs) {
 
   const hasValidData =
     isString(playlistId) &&
-    isString(contributorIds) &&
-    isString(trackIds) &&
+    isNotFile(contributorIds) &&
+    isNotFile(trackIds) &&
     isNotFile(honourableMentions) &&
     isNotFile(voterId) &&
     isNotFile(shameVotes);

@@ -1,35 +1,20 @@
-import { useMemo } from "react";
 import { Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from "recharts";
 
 import { votes } from "context/database";
 
 import { ResultValue } from "@app/utils/results";
 
-import { DialogResults } from "@app/components/dialog-results";
 import { ResultsTooltip } from "@app/components/results-tooltip";
-import { ResultsWinner } from "@app/components/results-winner";
-
-type Vote = typeof votes.$inferSelect;
+import { ResultsFooter } from "@app/components/results-footer";
 
 type Props = {
   label: string;
   data: ResultValue[];
+  canTiebreak?: boolean;
+  field: string;
 };
 
-export function ResultsPie({ label, data }: Props) {
-  const total = useMemo(() => {
-    return data.reduce((total, value) => total + value.count, 0);
-  }, [data]);
-
-  const winners = useMemo(() => {
-    const top = data.reduce<ResultValue>(
-      (final, value) => (value.count > final.count ? value : final),
-      data[0],
-    );
-
-    return data.filter((value) => value.count === top.count);
-  }, []);
-
+export function ResultsPie({ label, data, canTiebreak, field }: Props) {
   return (
     <div className="flex flex-col gap-4 px-6 py-8">
       <div className="flex flex-col overflow-hidden rounded">
@@ -55,8 +40,12 @@ export function ResultsPie({ label, data }: Props) {
           </ResponsiveContainer>
         )}
       </div>
-      <ResultsWinner data={winners} label={label} total={total} />
-      <DialogResults data={data} label={label} cta="See All Results" />
+      <ResultsFooter
+        label={label}
+        data={data}
+        canTiebreak={canTiebreak}
+        field={field}
+      />
     </div>
   );
 }
