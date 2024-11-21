@@ -27,7 +27,7 @@ export async function fetchUsersFromPlaylist(
 export function isNotFile(
   value: FormDataEntryValue | null,
 ): value is string | null {
-  return typeof value !== "object";
+  return value === null || typeof value !== "object";
 }
 
 export function isString(value: FormDataEntryValue | null): value is string {
